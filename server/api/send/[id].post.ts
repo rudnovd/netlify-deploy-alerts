@@ -41,13 +41,22 @@ export default defineEventHandler(async (event) => {
     } else if (!target.meta) {
       throw createError({ statusMessage: 'No user id found, please visit https://t.me/netlifydeployalertsbot' })
     } else if (!site.enabled || !alert.enabled) {
-      return setResponseStatus(event, 200)
+      return {
+        statusCode: 200,
+        statusMessage: 'OK',
+      }
     }
 
     const telegraf = useTelegraf()
     await telegraf.telegram.sendMessage(target.meta, alert.text)
-    return setResponseStatus(event, 200, 'Alert sended')
+    return {
+      statusCode: 200,
+      statusMessage: 'Alert sended',
+    }
   } else if (!target.provider) {
-    return setResponseStatus(event, 404, 'Alert target not found')
+    return {
+      statusCode: 404,
+      statusMessage: 'Alert target not found',
+    }
   }
 })
