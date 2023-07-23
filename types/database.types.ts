@@ -21,8 +21,8 @@ export interface Database {
       }
       targets: {
         Row: Target
-        Insert: Pick<Target, 'user' | 'provider' | 'target'>
-        Update: Pick<Target, 'provider' | 'target' | 'confirmed'>
+        Insert: Pick<Target, 'user' | 'provider' | 'target' | 'meta'>
+        Update: Pick<Target, 'provider' | 'target' | 'confirmed' | 'meta'>
       }
     }
     Views: {
