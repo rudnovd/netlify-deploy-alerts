@@ -11,12 +11,18 @@ export default defineNitroPlugin(() => {
     const userId = ctx.message.from.id
     const username = `@${ctx.message.from.username}`
 
-    const { data: target } = await supabase
+    const { data: target, error: targetError } = await supabase
       .from('targets')
       .select('confirmed, meta')
       .eq('provider', 'Telegram')
       .eq('target', username)
       .single()
+    if (targetError) {
+      throw createError(targetError.message)
+    } else if (!target) {
+      ctx.reply('No alerts found for this user')
+      throw createError('Target not found')
+    }
 
     if (!target?.confirmed || !target.meta) {
       await supabase
