@@ -14,9 +14,13 @@
     <span>{{ alert.text }}</span>
 
     <div class="flex items-center justify-between gap-2">
-      <div class="flex gap-2 items-center">
-        <UButton size="xs" icon="i-heroicons-link" @click="copyLink(`${route.fullPath}alerts/${alert.id}`)" />
-        <UInput :value="`${route.fullPath}alerts/${alert.id}`" disabled />
+      <div class="alert-link">
+        <UButton
+          size="xs"
+          icon="i-heroicons-link"
+          @click="copyLink(`https://netlifydeployalerts.com/api/send/${alert.id}`)"
+        />
+        <UInput :value="`https://netlifydeployalerts.com/api/send/${alert.id}`" disabled />
       </div>
       <div class="flex gap-2 items-center">
         <UToggle v-model="alert.enabled" :disabled="loading" @click="changeAlertEnabled" />
@@ -56,7 +60,6 @@
 const props = defineProps<{ alert: Alert }>()
 const alert = toRef(props.alert)
 
-const route = useRoute()
 const toast = useToast()
 
 const targets = useState<Array<Target>>('targets')
@@ -124,5 +127,13 @@ function copyLink(url: string) {
   border-radius: 8px;
   padding: 16px;
   row-gap: 4px;
+}
+
+.alert-link {
+  flex: 0 0 80%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
 }
 </style>
