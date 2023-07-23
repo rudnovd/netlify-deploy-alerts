@@ -5,4 +5,7 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+  nitro: {
+    plugins: ['plugins/telegraf.ts'],
+  },
 })
