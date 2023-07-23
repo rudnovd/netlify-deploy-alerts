@@ -10,7 +10,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: 'Authorization required' })
   }
 
-  const { data, error } = await supabase.from('targets').select('id, provider, target, created_at').eq('user', user.id)
+  const { data, error } = await supabase
+    .from('targets')
+    .select('id, provider, target, confirmed, created_at')
+    .eq('user', user.id)
 
   if (error) {
     throw createError(error.message)
