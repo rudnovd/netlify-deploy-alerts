@@ -124,7 +124,6 @@ function onCreateAlert(alert: Alert) {
 async function signIn() {
   try {
     await auth.signInWithOAuth({ provider: 'github' })
-    toast.add({ title: 'Signed in successfully' })
   } catch (error) {
     const err = error as FetchError
     toast.add({ title: err.message })
