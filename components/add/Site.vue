@@ -62,10 +62,18 @@ async function addSite() {
     return
   }
 
+  if (url.value.includes('https://')) {
+    url.value = url.value.replace('https://', '')
+  } else if (url.value.includes('http://')) {
+    url.value = url.value.replace('http://', '')
+  }
+
   try {
     const addedSite = await $fetch<Site>('/api/sites', {
       method: 'POST',
-      body: { url: url.value },
+      body: {
+        url: url.value,
+      },
     })
     sites.value.push(addedSite)
     newSiteModalIsOpen.value = false
