@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.0.0-alpha.1](https://github.com/rudnovd/netlify-deploy-alerts/compare/v0.0.0-alpha.0...v0.0.0-alpha.1) (2023-07-23)
+
+
+### Bug Fixes
+
+* **AlertCard:** fix alerts links ([fdd09e3](https://github.com/rudnovd/netlify-deploy-alerts/commit/fdd09e317c71a68ce30c93a610862f00823b7138))
+
 ## 0.0.0-alpha.0 (2023-07-23)
 
 
