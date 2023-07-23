@@ -29,8 +29,9 @@ interface Target {
   user: string
   provider: Provider
   target: string
-  confirmed: string
+  confirmed: boolean
   created_at: string
+  meta: string
 }
 
 interface FetchError {
