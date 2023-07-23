@@ -17,8 +17,12 @@
 
     <div class="flex items-center justify-between gap-2">
       <div class="alert-link">
-        <UButton size="xs" icon="i-heroicons-link" @click="copyLink(`${route.fullPath}api/send/${alert.id}`)" />
-        <UInput :value="`${route.fullPath}api/send/${alert.id}`" disabled />
+        <UButton
+          size="xs"
+          icon="i-heroicons-link"
+          @click="copyLink(`https://netlifydeployalerts.netlify.app/api/send/${alert.id}`)"
+        />
+        <UInput :value="`https://netlifydeployalerts.netlify.app/api/send/${alert.id}`" disabled />
       </div>
       <div class="flex gap-2 items-center">
         <UToggle v-model="alert.enabled" :disabled="loading" @click="changeAlertEnabled" />
@@ -58,7 +62,6 @@
 const props = defineProps<{ alert: Alert }>()
 const alert = toRef(props.alert)
 
-const route = useRoute()
 const toast = useToast()
 
 const targets = useState<Array<Target>>('targets')
