@@ -4,6 +4,7 @@ import { serverSupabaseClient } from '#supabase/server'
 export default defineEventHandler(async (event) => {
   const supabase = serverSupabaseClient<Database>(event)
   const headers = getRequestHeaders(event)
+  const config = useRuntimeConfig()
   const { id } = event.context.params || {}
 
   if (!id) {
@@ -37,9 +38,9 @@ export default defineEventHandler(async (event) => {
 
   if (target.provider === 'Telegram') {
     if (!target.confirmed) {
-      throw createError({ statusMessage: 'Confirm required, please visit https://t.me/netlifydeployalertsbot' })
+      throw createError({ statusMessage: `Confirm required, please visit ${config.public.telegramBotLink}` })
     } else if (!target.meta) {
-      throw createError({ statusMessage: 'No user id found, please visit https://t.me/netlifydeployalertsbot' })
+      throw createError({ statusMessage: `No user id found, please visit ${config.public.telegramBotLink}` })
     } else if (!site.enabled || !alert.enabled) {
       return {
         statusCode: 200,
