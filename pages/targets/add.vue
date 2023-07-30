@@ -1,7 +1,5 @@
 <template>
-  <UButton class="flex justify-center" @click="newTargetModalIsOpen = true">Add target</UButton>
-
-  <UModal v-model="newTargetModalIsOpen">
+  <UModal :model-value="true">
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
@@ -11,7 +9,7 @@
             variant="ghost"
             icon="i-heroicons-x-mark-20-solid"
             class="-my-1"
-            @click="newTargetModalIsOpen = false"
+            @click="navigateTo('/targets')"
           />
         </div>
       </template>
@@ -39,10 +37,8 @@
 const toast = useToast()
 
 const providers = ['Telegram']
-
 const targets = useState<Array<Target>>('targets', () => [])
 
-const newTargetModalIsOpen = ref(false)
 const loading = ref(false)
 const target = reactive({
   provider: providers[0],
@@ -61,19 +57,28 @@ async function addTarget() {
     return
   }
 
-  if (target.provider === 'Telegram') {
-    if (target.target[0] !== '@') {
-      target.target = `@${target.target}`
+  const body = {
+    ...target,
+    target: target.target.trim(),
+  }
+
+  if (body.provider === 'Telegram') {
+    if (body.target[0] !== '@') {
+      body.target = `@${body.target}`
     }
+    errors.target = body.target.length < 6 ? 'Telegram username must be at least 5 characters' : ''
+  }
+
+  if (errors.target) {
+    return
   }
 
   try {
     loading.value = true
-    const targetsResponse = await $fetch<Target>('/api/targets', { method: 'POST', body: target })
-    targets.value.push(targetsResponse)
-    toast.add({ title: `Target '${target.provider} - ${target.target}' added` })
-    newTargetModalIsOpen.value = false
-    target.target = ''
+    const newTarget = await $fetch<Target>('/api/targets', { method: 'POST', body })
+    targets.value.push(newTarget)
+    toast.add({ title: `Target '${newTarget.provider} - ${newTarget.target}' added` })
+    navigateTo(`/targets/${newTarget.id}/confirm`)
   } catch (error) {
     const err = error as FetchError
     toast.add({ title: err.message })
