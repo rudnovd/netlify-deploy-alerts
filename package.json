@@ -2,6 +2,12 @@
   "name": "netlify-deploy-alerts",
   "version": "0.0.0-alpha.1",
   "private": true,
+  "description": "Get notifications when your Netlify projects are deployed",
+  "homepage": "https://netlifydeployalerts.netlify.app/",
+  "bugs": {
+    "url": "https://github.com/rudnovd/netlify-deploy-alerts/issues"
+  },
+  "repository": "github:rudnovd/netlify-deploy-alerts",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -27,5 +33,13 @@
   "dependencies": {
     "@nuxtjs/supabase": "^0.3.8",
     "telegraf": "^4.12.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
