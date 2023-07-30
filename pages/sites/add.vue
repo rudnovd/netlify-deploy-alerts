@@ -1,9 +1,5 @@
 <template>
-  <UButton class="flex items-center justify-center" @click="newSiteModalIsOpen = true">
-    <slot>Add site</slot>
-  </UButton>
-
-  <UModal v-model="newSiteModalIsOpen">
+  <UModal :model-value="true">
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
@@ -13,7 +9,7 @@
             variant="ghost"
             icon="i-heroicons-x-mark-20-solid"
             class="-my-1"
-            @click="newSiteModalIsOpen = false"
+            @click="navigateTo('/sites')"
           />
         </div>
       </template>
@@ -39,48 +35,37 @@
 </template>
 
 <script setup lang="ts">
-const newSiteModalIsOpen = ref(false)
-
+const toast = useToast()
 const sites = useState<Array<Site>>('sites', () => [])
 
-const toast = useToast()
-
-const url = ref('')
 const loading = ref(false)
+const url = ref('')
 const errors = reactive({
   url: '',
 })
 
 async function addSite() {
-  const urlRegexp = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i
-  const urlWithProtocol =
-    url.value.includes('https://') || url.value.includes('http://') ? url.value : `https://${url.value}`
+  const body = {
+    url: url.value,
+  }
 
-  errors.url = !urlRegexp.test(urlWithProtocol) ? 'Invalid URL' : ''
+  errors.url = !body.url ? 'URL is required' : ''
 
   if (errors.url) {
     return
   }
 
-  if (url.value.includes('https://')) {
-    url.value = url.value.replace('https://', '')
-  } else if (url.value.includes('http://')) {
-    url.value = url.value.replace('http://', '')
-  }
-
   try {
-    const addedSite = await $fetch<Site>('/api/sites', {
+    const newSite = await $fetch<Site>('/api/sites', {
       method: 'POST',
-      body: {
-        url: url.value,
-      },
+      body,
     })
-    sites.value.push(addedSite)
-    newSiteModalIsOpen.value = false
-    toast.add({ title: `${url.value} added` })
-    url.value = ''
+    sites.value.push(newSite)
+    toast.add({ title: `${newSite.url} added` })
+    navigateTo(`/sites/${newSite.id}`)
   } catch (error) {
     const err = error as FetchError
+    errors.url = err.message
     toast.add({ title: err.message })
   } finally {
     loading.value = false

@@ -1,18 +1,10 @@
 <template>
-  <UButton class="flex justify-center" @click="newAlertCreateIsOpen = true">Create new alert</UButton>
-
-  <UModal v-model="newAlertCreateIsOpen" prevent-close>
+  <UModal :model-value="true" prevent-close>
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Create new alert</h3>
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-x-mark-20-solid"
-            class="-my-1"
-            @click="newAlertCreateIsOpen = false"
-          />
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="router.back" />
         </div>
       </template>
 
@@ -37,7 +29,7 @@
 
       <template #footer>
         <section class="flex justify-end">
-          <UButton :loading="loading" @click="addAlert">Create alert</UButton>
+          <UButton :loading="loading" @click="saveAlert">Save alert</UButton>
         </section>
       </template>
     </UCard>
@@ -45,15 +37,18 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ site?: Site }>()
-const emit = defineEmits(['create'])
-
+const router = useRouter()
+const route = useRoute()
 const toast = useToast()
 
-const targets = useState<Array<Target>>('targets')
-const events = useState<Array<Event>>('events')
+const targets = useState<Array<Target>>('targets', () => [])
+const events = useState<Array<Event>>('events', () => [])
+const alerts = useState<Array<Alert>>('alerts', () => [])
+const sites = useState<Array<Site>>('sites', () => [])
 
-const newAlertCreateIsOpen = ref(false)
+const site = computed(() => sites.value.find((site) => site.id === route.params.siteId))
+const selectedAlert = ref(alerts.value.find((a) => a.id === route.params.alertId))
+
 const errors = reactive({
   target: '',
   event: '',
@@ -61,14 +56,14 @@ const errors = reactive({
 })
 
 const targetsOptions = computed(() => {
-  return targets.value?.map((target) => ({
+  return targets.value.map((target) => ({
     label: `${target.provider} - ${target.target}`,
     value: target.id,
   }))
 })
 
 const eventsOptions = computed(() => {
-  return events.value?.map((event) => ({
+  return events.value.map((event) => ({
     label: event.name,
     value: event.id,
   }))
@@ -79,17 +74,35 @@ const event = ref<{ label: string; value: string }>()
 const alert = reactive<Pick<Alert, 'target' | 'event' | 'site' | 'text'>>({
   target: '',
   event: '',
-  site: props.site?.id || '',
+  site: route.params.siteId.toString() || '',
   text: '',
 })
 const loading = ref(false)
+
+if (selectedAlert.value) {
+  alert.target = selectedAlert.value.target
+  alert.event = selectedAlert.value.event
+  alert.text = selectedAlert.value.text
+  if (alert.target) {
+    const _target = targets.value.find((target) => target.id === alert.target)
+    if (_target) {
+      target.value = { label: _target.target, value: _target.id }
+    }
+  }
+  if (alert.event) {
+    const _event = events.value.find((event) => event.id === alert.event)
+    if (_event) {
+      event.value = { label: _event.name, value: _event.id }
+    }
+  }
+}
 
 function addText(text: string) {
   alert.text += `
 ${text}`
 }
 
-async function addAlert() {
+async function saveAlert() {
   errors.target = !alert.target ? 'Target is required' : ''
   errors.event = !alert.event ? 'Event is required' : ''
   errors.message = !alert.text ? 'Message is required' : ''
@@ -99,10 +112,13 @@ async function addAlert() {
 
   try {
     loading.value = true
-    const response = await $fetch('/api/alerts', { method: 'POST', body: alert })
-    emit('create', response)
-    newAlertCreateIsOpen.value = false
-    toast.add({ title: 'Alert created' })
+    const editedAlert = await $fetch<Alert>(`/api/alerts/${selectedAlert.value?.id}`, { method: 'PUT', body: alert })
+    const editedAlertIndex = alerts.value?.findIndex((alert) => alert.id === editedAlert.id)
+    if (editedAlertIndex !== -1) {
+      alerts.value?.splice(editedAlertIndex, 1, editedAlert)
+    }
+    toast.add({ title: 'Alert saved' })
+    navigateTo(`/sites/${route.params.siteId}/alerts`)
   } catch (error) {
     const err = error as FetchError
     toast.add({ title: err.message })

@@ -25,42 +25,24 @@
         <UInput :value="`https://netlifydeployalerts.netlify.app/api/send/${alert.id}`" disabled />
       </div>
       <div class="flex gap-2 items-center">
+        <UButton size="xs" icon="i-heroicons-pencil" :to="`/sites/${route.params.siteId}/alerts/${alert.id}/edit`" />
+        <UButton
+          :disabled="loading"
+          size="xs"
+          icon="i-heroicons-trash"
+          :to="`/sites/${route.params.siteId}/alerts/${alert.id}/delete`"
+        />
         <UToggle v-model="alert.enabled" :disabled="loading" @click="changeAlertEnabled" />
-        <UButton :disabled="loading" size="xs" icon="i-heroicons-trash" @click="deleteModalIsOpen = true" />
       </div>
     </div>
   </div>
-
-  <UModal v-model="deleteModalIsOpen">
-    <UCard>
-      <template #header>
-        <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Delete alert</h3>
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-x-mark-20-solid"
-            class="-my-1"
-            @click="deleteModalIsOpen = false"
-          />
-        </div>
-      </template>
-
-      Delete alert?
-
-      <template #footer>
-        <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" @click="deleteModalIsOpen = false">Cancel</UButton>
-          <UButton :disabled="loading" :loading="loading" @click="deleteAlert">Delete</UButton>
-        </section>
-      </template>
-    </UCard>
-  </UModal>
 </template>
 
 <script setup lang="ts">
 const props = defineProps<{ alert: Alert }>()
+const route = useRoute()
 const alert = toRef(props.alert)
+const config = useRuntimeConfig()
 
 const toast = useToast()
 
@@ -69,13 +51,12 @@ const events = useState<Array<{ id: string; name: string }>>('events')
 const alerts = useState<Array<Alert>>('alerts')
 
 const loading = ref(false)
-const deleteModalIsOpen = ref(false)
 
 const target = computed(() => targets.value?.find((target) => target.id === alert.value.target))
 const event = computed(() => events.value?.find((event) => event.id === alert.value.event))
 const providerLink = computed(() => {
   if (target.value?.provider === 'Telegram') {
-    return `https://t.me/netlifydeployalertsbot`
+    return config.public.telegramBotLink
   } else {
     return target.value?.provider
   }
@@ -93,20 +74,6 @@ async function changeAlertEnabled() {
       alerts.value?.splice(editedAlertIndex, 1, data)
     }
     toast.add({ title: `Alert ${alert.value.enabled ? 'enabled' : 'disabled'}` })
-  } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
-  } finally {
-    loading.value = false
-  }
-}
-
-async function deleteAlert() {
-  try {
-    loading.value = true
-    await $fetch(`/api/alerts/${alert.value.id}`, { method: 'DELETE' })
-    alerts.value = alerts.value.filter((a) => a.id !== alert.value.id)
-    toast.add({ title: 'Alert deleted' })
   } catch (error) {
     const err = error as FetchError
     toast.add({ title: err.message })

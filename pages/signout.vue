@@ -1,0 +1,39 @@
+<template>
+  <UModal :model-value="true">
+    <UCard>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Sign out</h3>
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="router.back" />
+        </div>
+      </template>
+
+      Are you sure you want to sign out?
+
+      <template #footer>
+        <section class="flex justify-end gap-2">
+          <UButton @click="router.back">Cancel</UButton>
+          <UButton @click="signOut">Sign out</UButton>
+        </section>
+      </template>
+    </UCard>
+  </UModal>
+</template>
+
+<script setup lang="ts">
+const router = useRouter()
+
+const { auth } = useSupabaseAuthClient()
+const toast = useToast()
+
+async function signOut() {
+  try {
+    await auth.signOut()
+    navigateTo('/')
+    toast.add({ title: 'Signed out successfully' })
+  } catch (error) {
+    const err = error as Error
+    toast.add({ title: err.message })
+  }
+}
+</script>
