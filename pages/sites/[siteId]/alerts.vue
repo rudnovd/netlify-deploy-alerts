@@ -1,7 +1,7 @@
 <template>
   <div>
     <section v-if="!targets?.length">
-      <UButton class="flex justify-center" to="/sites/targets/add">Add target</UButton>
+      <UButton class="flex justify-center" to="/targets/add">Add target</UButton>
     </section>
 
     <section v-if="targets?.length">
