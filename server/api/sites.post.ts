@@ -4,18 +4,43 @@ import { Database } from '~~/types/database.types'
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
   const supabase = serverSupabaseClient<Database>(event)
-  const { url } = await readBody<Readonly<Pick<Site, 'url'>>>(event)
-  const urlRegexp = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i
+  let { url } = await readBody<Readonly<Pick<Site, 'url'>>>(event)
+  const urlRegexp = /^([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i
 
   if (!user?.id) {
     throw createError({ statusMessage: 'Authorization required' })
   } else if (!url) {
     throw createError({ statusMessage: 'URL is required' })
-  } else if (!new RegExp(urlRegexp).test(url)) {
-    throw createError({ statusMessage: 'Wrong URL format' })
+  } else if (url) {
+    url = url.toLocaleLowerCase()
+
+    if (url.includes('https://')) {
+      url = url.replace('https://', '')
+    } else if (url.includes('http://')) {
+      url = url.replace('http://', '')
+    }
+
+    if (url[url.length - 1] === '/') {
+      url = url.slice(0, -1)
+    }
+
+    if (!new RegExp(urlRegexp).test(url)) {
+      throw createError({ statusMessage: 'Wrong URL format' })
+    }
   }
 
-  const { data, error } = await supabase
+  const { data: alreadyExistSites, error: alreadyExistSitesError } = await supabase
+    .from('sites')
+    .select('id')
+    .eq('user', user.id)
+    .eq('url', url)
+  if (alreadyExistSitesError) {
+    throw createError(alreadyExistSitesError.message)
+  } else if (alreadyExistSites?.length) {
+    throw createError({ statusMessage: 'Site already exists' })
+  }
+
+  const { data: site, error: siteError } = await supabase
     .from('sites')
     .insert({
       url,
@@ -23,10 +48,9 @@ export default defineEventHandler(async (event) => {
     })
     .select('id, url, enabled')
     .single()
-
-  if (error) {
-    throw createError(error.message)
+  if (siteError) {
+    throw createError(siteError.message)
   }
 
-  return data
+  return site
 })
