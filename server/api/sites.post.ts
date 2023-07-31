@@ -20,8 +20,8 @@ export default defineEventHandler(async (event) => {
       url = url.replace('http://', '')
     }
 
-    if (url[url.length - 1] === '/') {
-      url = url.slice(0, -1)
+    if (url.includes('/')) {
+      url = url.replaceAll('/', '')
     }
 
     if (!new RegExp(urlRegexp).test(url)) {
@@ -34,13 +34,14 @@ export default defineEventHandler(async (event) => {
     .select('id')
     .eq('user', user.id)
     .eq('url', url)
+
   if (alreadyExistSitesError) {
     throw createError(alreadyExistSitesError.message)
   } else if (alreadyExistSites?.length) {
     throw createError({ statusMessage: 'Site already exists' })
   }
 
-  const { data: site, error: siteError } = await supabase
+  const { data: newSite, error: newSiteError } = await supabase
     .from('sites')
     .insert({
       url,
@@ -48,9 +49,10 @@ export default defineEventHandler(async (event) => {
     })
     .select('id, url, enabled')
     .single()
-  if (siteError) {
-    throw createError(siteError.message)
+
+  if (newSiteError) {
+    throw createError(newSiteError.message)
   }
 
-  return site
+  return newSite
 })

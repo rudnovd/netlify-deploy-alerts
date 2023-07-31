@@ -18,9 +18,9 @@ export default defineEventHandler(async (event) => {
     throw createError(alertsDeleteError.message)
   }
 
-  const { error: sitesError } = await supabase.from('sites').delete().eq('user', user.id).eq('id', id)
-  if (sitesError) {
-    throw createError(sitesError.message)
+  const { error: siteDeleteError } = await supabase.from('sites').delete().eq('user', user.id).eq('id', id)
+  if (siteDeleteError) {
+    throw createError(siteDeleteError.message)
   }
 
   return true

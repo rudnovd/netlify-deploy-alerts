@@ -5,7 +5,7 @@ import { Database } from '~~/types/database.types'
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
   const supabase = serverSupabaseClient<Database>(event)
-  const { id } = event.context.params || {}
+  const { id } = event.context.params ?? {}
 
   if (!user?.id) {
     throw createError({ statusMessage: 'Authorization required' })
@@ -13,16 +13,16 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: 'Target id parameter required' })
   }
 
-  const { data, error } = await supabase
+  const { data: target, error: targetError } = await supabase
     .from('targets')
     .select('id, provider, target, confirmed, created_at')
     .eq('user', user.id)
     .eq('id', id)
     .single()
 
-  if (error) {
-    throw createError(error.message)
+  if (targetError) {
+    throw createError(targetError.message)
   }
 
-  return data
+  return target
 })

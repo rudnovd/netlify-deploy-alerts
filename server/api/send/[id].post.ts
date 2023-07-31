@@ -18,11 +18,13 @@ export default defineEventHandler(async (event) => {
     .select('target, site, text, enabled')
     .eq('id', id)
     .single()
+
   if (alertError) {
     throw createError(alertError.message)
   }
 
   const { data: site, error: siteError } = await supabase.from('sites').select('enabled').eq('id', alert.site).single()
+
   if (siteError) {
     throw createError(siteError.message)
   }
@@ -32,15 +34,18 @@ export default defineEventHandler(async (event) => {
     .select('meta, provider, target, confirmed')
     .eq('id', alert.target)
     .single()
+
   if (targetError) {
     throw createError(targetError.message)
   }
 
   if (target.provider === 'Telegram') {
     if (!target.confirmed) {
-      throw createError({ statusMessage: `Confirm required, please visit ${config.public.telegramBotLink}` })
+      throw createError({ statusMessage: `Confirmation required, please visit ${config.public.telegramBotLink}` })
     } else if (!target.meta) {
-      throw createError({ statusMessage: `No user id found, please visit ${config.public.telegramBotLink}` })
+      throw createError({ statusMessage: `User id not found, please visit ${config.public.telegramBotLink}` })
+    } else if (!target.target) {
+      throw createError({ statusMessage: `Terget not found, please visit ${config.public.telegramBotLink}` })
     } else if (!site.enabled || !alert.enabled) {
       return {
         statusCode: 200,
@@ -57,7 +62,7 @@ export default defineEventHandler(async (event) => {
   } else if (!target.provider) {
     return {
       statusCode: 404,
-      statusMessage: 'Alert target not found',
+      statusMessage: 'Alert provider not found',
     }
   }
 })
