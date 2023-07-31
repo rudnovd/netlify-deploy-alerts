@@ -17,7 +17,7 @@
       <section>
         <template v-if="target?.provider === 'Telegram'">
           To allow alerts to be sent to <UBadge color="cyan">{{ target.target }}</UBadge
-          >, you must send the <UBadge color="cyan">/start</UBadge> command to
+          >, you must send the <UBadge color="cyan">/confirm</UBadge> command to
           <a
             class="font-medium text-blue-600 dark:text-blue-500 underline"
             target="_blank"
@@ -60,7 +60,7 @@ async function checkConfirmation() {
       toast.add({ title: `Target '${targetForConfirm.target}' confirmed` })
       navigateTo({ path: '/sites' })
     } else {
-      toast.add({ title: `Target '${targetForConfirm.target}' not confirmed, use /start command again` })
+      toast.add({ title: `Target '${targetForConfirm.target}' not confirmed, use /confirm command again` })
     }
   } catch (error) {
     const err = error as FetchError
