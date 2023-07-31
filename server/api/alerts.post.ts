@@ -1,21 +1,16 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import { Database } from '~~/types/database.types'
 
-export default defineEventHandler(async (event) => {
-  const user = await serverSupabaseUser(event)
-  const supabase = serverSupabaseClient<Database>(event)
-  const {
-    target,
-    event: alertEvent,
-    text,
-    site,
-  } = await readBody<Readonly<Pick<Alert, 'target' | 'event' | 'text' | 'site'>>>(event)
+export default defineEventHandler(async (h3Event) => {
+  const user = await serverSupabaseUser(h3Event)
+  const supabase = serverSupabaseClient<Database>(h3Event)
+  const { target, event, text, site } = await readBody<Readonly<Pick<Alert, 'target' | 'event' | 'text' | 'site'>>>(
+    h3Event,
+  )
 
   if (!user?.id) {
     throw createError({ statusMessage: 'Authorization required' })
-  }
-
-  if (!alertEvent) {
+  } else if (!event) {
     throw createError({ statusMessage: 'Event is required' })
   } else if (!text) {
     throw createError({ statusMessage: 'Text is required' })
@@ -25,10 +20,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: 'Site is required' })
   }
 
-  const { data, error } = await supabase
+  const { data: newAlert, error: newAlertError } = await supabase
     .from('alerts')
     .insert({
-      event: alertEvent,
+      event,
       target,
       user: user.id,
       text,
@@ -37,9 +32,9 @@ export default defineEventHandler(async (event) => {
     .select('id, event, target, text, site, enabled, created_at, updated_at')
     .single()
 
-  if (error) {
-    throw createError(error.message)
+  if (newAlertError) {
+    throw createError(newAlertError.message)
   }
 
-  return data
+  return newAlert
 })

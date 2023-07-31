@@ -14,19 +14,26 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: 'Provider is required' })
   }
 
-  const { data, error } = await supabase
+  if (provider === 'Telegram') {
+    const telegramUsernameRegexp = /.*\B@(?=\w{5,32}\b)[a-zA-Z0-9]+(?:_[a-zA-Z0-9]+)*.*/
+    if (!telegramUsernameRegexp.test(target)) {
+      throw createError({ statusMessage: 'Telegram username is invalid' })
+    }
+  }
+
+  const { data: newTarget, error: newTargetError } = await supabase
     .from('targets')
     .insert({
       provider,
       user: user.id,
       target,
     })
-    .select('id, provider, target, created_at')
+    .select('id, provider, target, confirmed, meta, created_at')
     .single()
 
-  if (error) {
-    throw createError(error.message)
+  if (newTargetError) {
+    throw createError(newTargetError.message)
   }
 
-  return data
+  return newTarget
 })

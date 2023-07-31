@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: 'Target required' })
   }
 
-  const { data, error } = await supabase
+  const { data: updatedTarget, error: updatedTargetError } = await supabase
     .from('targets')
     .update({
       provider,
@@ -28,9 +28,9 @@ export default defineEventHandler(async (event) => {
     .select()
     .single()
 
-  if (error) {
-    throw createError(error.message)
+  if (updatedTargetError) {
+    throw createError(updatedTargetError.message)
   }
 
-  return data
+  return updatedTarget
 })
