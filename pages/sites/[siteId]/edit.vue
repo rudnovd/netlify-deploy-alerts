@@ -9,7 +9,7 @@
             variant="ghost"
             icon="i-heroicons-x-mark-20-solid"
             class="-my-1"
-            @click="navigateTo(`/sites/${route.params.siteId}`)"
+            :to="`/sites/${route.params.siteId}`"
           />
         </div>
       </template>
@@ -66,7 +66,7 @@ async function editSite() {
       sites.value?.splice(editedSiteIndex, 1, editedSite)
     }
     toast.add({ title: `${site.value?.url} updated` })
-    navigateTo(`/sites/${route.params.siteId}`)
+    navigateTo(`/sites/${route.params.siteId}/alerts`)
   } catch (error) {
     const err = error as FetchError
     toast.add({ title: err.message })
