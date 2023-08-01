@@ -5,9 +5,16 @@
     <span class="truncate" :title="site.url">{{ site.url }}</span>
 
     <section v-if="active" class="flex gap-1 items-center">
-      <UButton :disabled="loading" size="xs" icon="i-heroicons-pencil" :to="`/sites/${site.id}/edit`" />
-      <UButton :disabled="loading" size="xs" icon="i-heroicons-trash" :to="`/sites/${site.id}/delete`" />
-      <UToggle v-model="site.enabled" @click="changeSiteEnabled" />
+      <UButton
+        size="xs"
+        icon="i-heroicons-wrench"
+        title="Go to Netlify dashboard"
+        :to="`https://app.netlify.com/sites/${site.url.split('.')[0]}/configuration/deploys#deploy-notifications`"
+        target="_blank"
+      />
+      <UButton size="xs" icon="i-heroicons-pencil" :to="`/sites/${site.id}/edit`" />
+      <UButton size="xs" icon="i-heroicons-trash" :to="`/sites/${site.id}/delete`" />
+      <UToggle v-model="site.enabled" :disabled="loading" @click="changeSiteEnabled" />
     </section>
   </li>
 </template>
