@@ -18,20 +18,17 @@
       </div>
     </section>
 
-    <NuxtPage :page-key="`/sites/${site?.id}/alerts/add`"></NuxtPage>
-    <NuxtPage :page-key="`/sites/${site?.id}/edit`"></NuxtPage>
+    <NuxtPage />
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ site?: Site }>()
-
 const route = useRoute()
 
 const alerts = useState<Array<Alert>>('alerts', () => [])
 const sites = useState<Array<Site>>('sites', () => [])
 const targets = useState<Array<Target>>('targets', () => [])
 
-const site = ref(props.site ?? sites.value.find((s) => s.id === route.params.siteId))
+const site = ref(sites.value.find((s) => s.id === route.params.siteId))
 const siteAlerts = computed(() => alerts.value.filter((alert) => alert.site === site.value?.id))
 </script>
