@@ -4,7 +4,13 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Sign out</h3>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="router.back" />
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-x-mark-20-solid"
+            class="-my-1"
+            :to="siteId ? `/sites/${siteId}/alerts` : `/sites`"
+          />
         </div>
       </template>
 
@@ -12,7 +18,7 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton @click="router.back">Cancel</UButton>
+          <UButton :to="siteId ? `/sites/${siteId}/alerts` : `/sites`">Cancel</UButton>
           <UButton @click="signOut">Sign out</UButton>
         </section>
       </template>
@@ -21,10 +27,10 @@
 </template>
 
 <script setup lang="ts">
-const router = useRouter()
-
 const { auth } = useSupabaseAuthClient()
 const toast = useToast()
+
+const siteId = useState<string | undefined>('selectedSite')
 
 async function signOut() {
   try {
