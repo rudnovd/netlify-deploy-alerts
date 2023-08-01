@@ -9,7 +9,7 @@
             variant="ghost"
             icon="i-heroicons-x-mark-20-solid"
             class="-my-1"
-            @click="navigateTo(`/sites/${route.params.siteId}`)"
+            :to="`/sites/${route.params.siteId}/alerts`"
           />
         </div>
       </template>
@@ -18,7 +18,7 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" @click="router.back">Cancel</UButton>
+          <UButton :disabled="loading" :to="`/sites/${route.params.siteId}/alerts`">Cancel</UButton>
           <UButton :disabled="loading" :loading="loading" @click="deleteSite">Delete</UButton>
         </section>
       </template>

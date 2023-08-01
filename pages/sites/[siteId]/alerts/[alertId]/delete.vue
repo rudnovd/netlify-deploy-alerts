@@ -4,7 +4,13 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Delete alert</h3>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="router.back" />
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-x-mark-20-solid"
+            class="-my-1"
+            :to="`/sites/${route.params.siteId}/alerts`"
+          />
         </div>
       </template>
 
@@ -12,7 +18,7 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" @click="router.back">Cancel</UButton>
+          <UButton :disabled="loading" :to="`/sites/${route.params.siteId}/alerts`">Cancel</UButton>
           <UButton :disabled="loading" :loading="loading" @click="deleteAlert">Delete</UButton>
         </section>
       </template>
