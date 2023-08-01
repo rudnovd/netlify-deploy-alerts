@@ -12,6 +12,13 @@
       </a>
       <span v-else> {{ target?.provider }}</span>
       {{ ` - ${target?.target}` }}
+      <NuxtLink
+        v-if="!target?.confirmed"
+        :to="`/targets/${target?.id}/confirm`"
+        class="text-red-600 font-medium underline"
+      >
+        (not confirmed)
+      </NuxtLink>
     </span>
     <span>{{ alert.text }}</span>
 
