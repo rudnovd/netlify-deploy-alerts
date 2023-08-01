@@ -6,3 +6,14 @@
     <UNotifications />
   </section>
 </template>
+
+<script setup lang="ts">
+const siteId = useState<string>('selectedSite')
+const router = useRouter()
+
+watch(router.currentRoute, ({ params }) => {
+  if (params.siteId) {
+    siteId.value = params.siteId.toString()
+  }
+})
+</script>

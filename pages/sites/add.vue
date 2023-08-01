@@ -9,7 +9,7 @@
             variant="ghost"
             icon="i-heroicons-x-mark-20-solid"
             class="-my-1"
-            @click="navigateTo('/sites')"
+            :to="siteId ? `/sites/${siteId}/alerts` : '/sites'"
           />
         </div>
       </template>
@@ -37,6 +37,7 @@
 <script setup lang="ts">
 const toast = useToast()
 const sites = useState<Array<Site>>('sites', () => [])
+const siteId = useState<string | undefined>('selectedSite')
 
 const loading = ref(false)
 const url = ref('')

@@ -23,7 +23,7 @@
         </div>
       </section>
 
-      <NuxtPage :page-key="`/sites/${route.params.siteId}`"></NuxtPage>
+      <NuxtPage :page-key="`/sites/${route.params.siteId}`" />
     </section>
   </div>
 </template>
