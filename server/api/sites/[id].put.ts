@@ -7,14 +7,11 @@ export default defineEventHandler(async (event) => {
   let { url } = await readBody<Readonly<Partial<Site>>>(event)
   const { enabled } = await readBody<Readonly<Partial<Site>>>(event)
   const { id } = event.context.params ?? {}
-  const urlRegexp = /^([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i
 
   if (!user?.id) {
     throw createError({ statusMessage: 'Authorization required' })
   } else if (!id) {
     throw createError({ statusMessage: 'Site id parameter required' })
-  } else if (!url) {
-    throw createError({ statusMessage: 'URL is required' })
   } else if (url) {
     url = url.toLocaleLowerCase()
 
@@ -28,6 +25,7 @@ export default defineEventHandler(async (event) => {
       url = url.replaceAll('/', '')
     }
 
+    const urlRegexp = /^([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i
     if (!new RegExp(urlRegexp).test(url)) {
       throw createError({ statusMessage: 'Wrong URL format' })
     }
