@@ -3,7 +3,7 @@ import { Database } from '~~/types/database.types'
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
-  const supabase = serverSupabaseClient<Database>(event)
+  const supabase = await serverSupabaseClient<Database>(event)
   const { provider, target } = await readBody<Readonly<Pick<Target, 'provider' | 'target'>>>(event)
 
   if (!user?.id) {
