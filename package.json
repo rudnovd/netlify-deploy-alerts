@@ -17,12 +17,12 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@nuxthq/ui": "^2.6.0",
+    "@nuxthq/ui": "^2.7.0",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/eslint-module": "^4.1.0",
-    "@types/node": "^20.4.5",
-    "@typescript-eslint/eslint-plugin": "^6.2.0",
-    "@typescript-eslint/parser": "^6.2.0",
+    "@types/node": "^20.4.6",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
@@ -31,7 +31,8 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@nuxtjs/supabase": "^0.3.8",
+    "@nuxtjs/supabase": "^1.0.0",
+    "@vueuse/nuxt": "^10.3.0",
     "telegraf": "^4.12.2"
   },
   "config": {
