@@ -3,7 +3,7 @@ import { Database } from '~~/types/database.types'
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
-  const supabase = serverSupabaseClient<Database>(event)
+  const supabase = await serverSupabaseClient<Database>(event)
   let { url } = await readBody<Readonly<Partial<Site>>>(event)
   const { enabled } = await readBody<Readonly<Partial<Site>>>(event)
   const { id } = event.context.params ?? {}

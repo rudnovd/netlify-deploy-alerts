@@ -4,7 +4,7 @@ import { Database } from '~~/types/database.types'
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
-  const supabase = serverSupabaseClient<Database>(event)
+  const supabase = await serverSupabaseClient<Database>(event)
 
   if (!user?.id) {
     throw createError({ statusMessage: 'Authorization required' })

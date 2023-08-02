@@ -2,7 +2,7 @@ import { Database } from '~~/types/database.types'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const supabase = serverSupabaseClient<Database>(event)
+  const supabase = await serverSupabaseClient<Database>(event)
   const headers = getRequestHeaders(event)
   const config = useRuntimeConfig()
   const { id } = event.context.params || {}
