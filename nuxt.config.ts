@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxthq/ui', '@nuxtjs/supabase', '@nuxtjs/eslint-module'],
+  modules: ['@nuxthq/ui', '@nuxtjs/supabase', '@nuxtjs/eslint-module', '@vueuse/nuxt'],
   typescript: {
     strict: true,
   },
@@ -35,6 +35,12 @@ export default defineNuxtConfig({
           content: 'netlify, deploy, alerts, telegram',
         },
       ],
+    },
+  },
+  supabase: {
+    redirectOptions: {
+      login: '/',
+      callback: '/confirm',
     },
   },
 })
