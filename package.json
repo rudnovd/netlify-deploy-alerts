@@ -1,6 +1,6 @@
 {
   "name": "netlify-deploy-alerts",
-  "version": "0.0.0-alpha.1",
+  "version": "0.0.0-beta.0",
   "private": true,
   "description": "Get notifications when your Netlify projects are deployed",
   "homepage": "https://netlifydeployalerts.netlify.app/",
