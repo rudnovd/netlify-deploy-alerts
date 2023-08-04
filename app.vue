@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-const siteId = useState<string>('selectedSite')
+const siteId = useState<string | null>('selectedSite', () => null)
 const router = useRouter()
 
 watch(router.currentRoute, ({ params }) => {

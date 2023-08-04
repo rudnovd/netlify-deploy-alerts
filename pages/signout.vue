@@ -30,7 +30,7 @@
 const { auth } = useSupabaseAuthClient()
 const toast = useToast()
 
-const siteId = useState<string | undefined>('selectedSite')
+const siteId = useState<string | null>('selectedSite')
 
 async function signOut() {
   try {
