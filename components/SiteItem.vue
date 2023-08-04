@@ -4,7 +4,7 @@
   >
     <span class="truncate" :title="site.url">{{ site.url }}</span>
 
-    <section v-if="active" class="flex gap-1 items-center">
+    <section v-if="active" class="flex gap-1 items-center" @click.stop>
       <UButton
         size="xs"
         icon="i-heroicons-wrench"
