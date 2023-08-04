@@ -3,7 +3,7 @@ import { Database } from '~~/types/database.types'
 
 export default defineEventHandler(async (h3Event) => {
   const user = await serverSupabaseUser(h3Event)
-  const supabase = serverSupabaseClient<Database>(h3Event)
+  const supabase = await serverSupabaseClient<Database>(h3Event)
   const { target, event, text, site } = await readBody<Readonly<Pick<Alert, 'target' | 'event' | 'text' | 'site'>>>(
     h3Event,
   )
