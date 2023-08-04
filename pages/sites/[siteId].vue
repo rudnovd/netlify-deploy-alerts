@@ -4,11 +4,11 @@
 
 <script setup lang="ts">
 const router = useRouter()
+const route = useRoute()
 
-watch(router.currentRoute, (newRoute) => {
-  const { path, params } = newRoute
-  if (path.split('/').length === 3 && params.siteId) {
-    navigateTo(`/sites/${params.siteId}/alerts`)
+watchEffect(() => {
+  if (router.currentRoute.value.name === 'sites-siteId') {
+    router.push(`/sites/${route.params.siteId}/alerts`)
   }
 })
 </script>
