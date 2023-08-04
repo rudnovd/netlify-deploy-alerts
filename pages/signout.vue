@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-const { auth } = useSupabaseAuthClient()
+const { auth } = useSupabaseClient()
 const toast = useToast()
 
 const siteId = useState<string | null>('selectedSite')
@@ -35,8 +35,8 @@ const siteId = useState<string | null>('selectedSite')
 async function signOut() {
   try {
     await auth.signOut()
-    navigateTo('/')
     toast.add({ title: 'Signed out successfully' })
+    navigateTo('/')
   } catch (error) {
     const err = error as Error
     toast.add({ title: err.message })
