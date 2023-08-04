@@ -29,7 +29,6 @@
 <script setup lang="ts">
 const route = useRoute()
 const toast = useToast()
-const router = useRouter()
 const sites = useState<Array<Site>>('sites', () => [])
 
 const site = ref(sites.value.find((site) => site.id === route.params.siteId))

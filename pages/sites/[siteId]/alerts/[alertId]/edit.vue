@@ -43,7 +43,6 @@
 </template>
 
 <script setup lang="ts">
-const router = useRouter()
 const route = useRoute()
 const toast = useToast()
 
