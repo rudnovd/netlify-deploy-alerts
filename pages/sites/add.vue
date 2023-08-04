@@ -37,7 +37,7 @@
 <script setup lang="ts">
 const toast = useToast()
 const sites = useState<Array<Site>>('sites', () => [])
-const siteId = useState<string | undefined>('selectedSite')
+const siteId = useState<string | null>('selectedSite')
 
 const loading = ref(false)
 const url = ref('')

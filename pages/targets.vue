@@ -27,5 +27,5 @@
 
 <script setup lang="ts">
 const targets = useState<Array<Target>>('targets', () => [])
-const siteId = useState<string | undefined>('selectedSite')
+const siteId = useState<string | null>('selectedSite')
 </script>

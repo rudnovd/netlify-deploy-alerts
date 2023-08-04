@@ -36,7 +36,7 @@ const route = useRoute()
 const toast = useToast()
 const config = useRuntimeConfig()
 const targets = useState<Array<Target>>('targets', () => [])
-const siteId = useState<string | undefined>('selectedSite')
+const siteId = useState<string | null>('selectedSite')
 
 const loading = ref(false)
 const target = ref(targets.value.find((target) => target.id === route.params.targetId))
