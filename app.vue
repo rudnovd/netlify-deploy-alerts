@@ -11,9 +11,13 @@
 const siteId = useState<string | null>('selectedSite', () => null)
 const router = useRouter()
 
-watch(router.currentRoute, ({ params }) => {
-  if (params.siteId) {
-    siteId.value = params.siteId.toString()
-  }
-})
+watch(
+  router.currentRoute,
+  ({ params }) => {
+    if (params.siteId) {
+      siteId.value = params.siteId.toString()
+    }
+  },
+  { immediate: true },
+)
 </script>
