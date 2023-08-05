@@ -4,13 +4,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Add site</h3>
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-x-mark-20-solid"
-            class="-my-1"
-            :to="siteId ? `/sites/${siteId}/alerts` : '/sites'"
-          />
+          <ButtonClose :to="siteId ? `/sites/${siteId}/alerts` : '/sites'" />
         </div>
       </template>
 

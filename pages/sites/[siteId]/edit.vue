@@ -4,13 +4,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Edit site</h3>
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-x-mark-20-solid"
-            class="-my-1"
-            :to="`/sites/${route.params.siteId}`"
-          />
+          <ButtonClose :to="`/sites/${siteId}`" />
         </div>
       </template>
 
@@ -34,12 +28,14 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+const {
+  params: { siteId },
+} = useRoute()
 const toast = useToast()
 const sites = useState<Array<Site>>('sites', () => [])
 
 const loading = ref(false)
-const site = ref(sites.value?.find((site) => site.id === route.params.siteId))
+const site = ref(sites.value?.find((site) => site.id === siteId))
 const errors = reactive({
   url: '',
 })
@@ -66,7 +62,7 @@ async function editSite() {
       sites.value?.splice(editedSiteIndex, 1, editedSite)
     }
     toast.add({ title: `${site.value?.url} updated` })
-    navigateTo(`/sites/${route.params.siteId}/alerts`)
+    navigateTo(`/sites/${siteId}/alerts`)
   } catch (error) {
     const err = error as FetchError
     toast.add({ title: err.message })

@@ -4,13 +4,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Create new alert</h3>
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-x-mark-20-solid"
-            class="-my-1"
-            :to="`/sites/${route.params.siteId}/alerts`"
-          />
+          <ButtonClose :to="`/sites/${siteId}/alerts`" />
         </div>
       </template>
 
@@ -43,7 +37,9 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+const {
+  params: { siteId },
+} = useRoute()
 const toast = useToast()
 
 const targets = useState<Array<Target>>('targets', () => [])
@@ -51,7 +47,7 @@ const events = useState<Array<Event>>('events', () => [])
 const alerts = useState<Array<Alert>>('alerts', () => [])
 const sites = useState<Array<Site>>('sites', () => [])
 
-const site = computed(() => sites.value.find((site) => site.id === route.params.siteId))
+const site = computed(() => sites.value.find((site) => site.id === siteId))
 
 const errors = reactive({
   target: '',
