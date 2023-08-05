@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes'
 import { Database } from '~~/types/database.types'
 import { serverSupabaseClient } from '#supabase/server'
 
@@ -8,9 +9,9 @@ export default defineEventHandler(async (event) => {
   const { id } = event.context.params || {}
 
   if (!id) {
-    throw createError({ statusMessage: 'Alert id parameter required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Alert id parameter required' })
   } else if (!headers['x-netlify-event']) {
-    throw createError({ statusMessage: 'Netlify event missing' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Netlify event missing' })
   }
 
   const { data: alert, error: alertError } = await supabase
@@ -20,13 +21,13 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (alertError) {
-    throw createError(alertError.message)
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: alertError.message })
   }
 
   const { data: site, error: siteError } = await supabase.from('sites').select('enabled').eq('id', alert.site).single()
 
   if (siteError) {
-    throw createError(siteError.message)
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: siteError.message })
   }
 
   const { data: target, error: targetError } = await supabase
@@ -36,19 +37,28 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (targetError) {
-    throw createError(targetError.message)
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: targetError.message })
   }
 
   if (target.provider === 'Telegram') {
     if (!target.confirmed) {
-      throw createError({ statusMessage: `Confirmation required, please visit ${config.public.telegramBotLink}` })
+      throw createError({
+        statusCode: StatusCodes.BAD_REQUEST,
+        statusMessage: `Confirmation required, please visit ${config.public.telegramBotLink}`,
+      })
     } else if (!target.meta) {
-      throw createError({ statusMessage: `User id not found, please visit ${config.public.telegramBotLink}` })
+      throw createError({
+        statusCode: StatusCodes.NOT_FOUND,
+        statusMessage: `User id not found, please visit ${config.public.telegramBotLink}`,
+      })
     } else if (!target.target) {
-      throw createError({ statusMessage: `Terget not found, please visit ${config.public.telegramBotLink}` })
+      throw createError({
+        statusCode: StatusCodes.NOT_FOUND,
+        statusMessage: `Target not found, please visit ${config.public.telegramBotLink}`,
+      })
     } else if (!site.enabled || !alert.enabled) {
       return {
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
         statusMessage: 'OK',
       }
     }
@@ -56,12 +66,12 @@ export default defineEventHandler(async (event) => {
     const telegraf = useTelegraf()
     await telegraf.telegram.sendMessage(target.meta, alert.text)
     return {
-      statusCode: 200,
+      statusCode: StatusCodes.OK,
       statusMessage: 'Alert sended',
     }
   } else if (!target.provider) {
     return {
-      statusCode: 404,
+      statusCode: StatusCodes.NOT_FOUND,
       statusMessage: 'Alert provider not found',
     }
   }

@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import { Database } from '~~/types/database.types'
 
@@ -9,15 +10,15 @@ export default defineEventHandler(async (h3Event) => {
   )
 
   if (!user?.id) {
-    throw createError({ statusMessage: 'Authorization required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Authorization required' })
   } else if (!event) {
-    throw createError({ statusMessage: 'Event is required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Event is required' })
   } else if (!text) {
-    throw createError({ statusMessage: 'Text is required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Text is required' })
   } else if (!target) {
-    throw createError({ statusMessage: 'Target is required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Target is required' })
   } else if (!site) {
-    throw createError({ statusMessage: 'Site is required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Site is required' })
   }
 
   const { data: newAlert, error: newAlertError } = await supabase
@@ -33,7 +34,7 @@ export default defineEventHandler(async (h3Event) => {
     .single()
 
   if (newAlertError) {
-    throw createError(newAlertError.message)
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: newAlertError.message })
   }
 
   return newAlert
