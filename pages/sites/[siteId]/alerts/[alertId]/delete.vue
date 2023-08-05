@@ -35,11 +35,11 @@ async function deleteAlert() {
     loading.value = true
     await $fetch(`/api/alerts/${alertId}`, { method: 'DELETE' })
     alerts.value = alerts.value.filter((a) => a.id !== alert.value?.id)
-    toast.add({ title: 'Alert deleted' })
+    toast.add({ title: 'Alert deleted', color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${siteId}/alerts`)
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

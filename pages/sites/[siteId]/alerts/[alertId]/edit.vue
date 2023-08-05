@@ -118,11 +118,11 @@ async function saveAlert() {
     if (editedAlertIndex !== -1) {
       alerts.value?.splice(editedAlertIndex, 1, editedAlert)
     }
-    toast.add({ title: 'Alert saved' })
+    toast.add({ title: 'Alert saved', color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${siteId}/alerts`)
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

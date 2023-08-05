@@ -70,12 +70,15 @@ async function addTarget() {
   try {
     loading.value = true
     const newTarget = await $fetch<Target>('/api/targets', { method: 'POST', body })
-    targets.value.push(newTarget)
-    toast.add({ title: `Target '${newTarget.provider} - ${newTarget.target}' added` })
+    toast.add({
+      title: `Target '${newTarget.provider} - ${newTarget.target}' added`,
+      color: 'green',
+      icon: 'i-heroicons-check-circle',
+    })
     navigateTo(`/targets/${newTarget.id}/confirm`)
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

@@ -74,7 +74,7 @@ const event = ref<{ label: string; value: string }>()
 const alert = reactive<Pick<Alert, 'target' | 'event' | 'site' | 'text'>>({
   target: '',
   event: '',
-  site: route.params.siteId.toString() || '',
+  site: siteId.toString() ?? '',
   text: '',
 })
 const loading = ref(false)
@@ -96,11 +96,11 @@ async function addAlert() {
     loading.value = true
     const newAlert = await $fetch<Alert>('/api/alerts', { method: 'POST', body: alert })
     alerts.value.push(newAlert)
-    navigateTo(`/sites/${route.params.siteId}/alerts`)
-    toast.add({ title: 'Alert created' })
+    navigateTo(`/sites/${siteId}/alerts`)
+    toast.add({ title: 'Alert created', color: 'green', icon: 'i-heroicons-check-circle' })
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

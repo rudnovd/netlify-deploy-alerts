@@ -52,14 +52,22 @@ async function checkConfirmation() {
     const thisTargetIndex = targets.value.findIndex((t) => t.id === targetForConfirm.id)
     if (targetForConfirm.confirmed) {
       targets.value.splice(thisTargetIndex, 1, targetForConfirm)
-      toast.add({ title: `Target '${targetForConfirm.target}' confirmed` })
+      toast.add({
+        title: `Target '${targetForConfirm.target}' confirmed`,
+        color: 'green',
+        icon: 'i-heroicons-check-circle',
+      })
       navigateTo({ path: siteId ? `/sites/${siteId}/alerts` : '/sites' })
     } else {
-      toast.add({ title: `Target '${targetForConfirm.target}' not confirmed, use /confirm command again` })
+      toast.add({
+        title: `Target '${targetForConfirm.target}' not confirmed, use /confirm command again`,
+        color: 'red',
+        icon: 'i-heroicons-x-circle',
+      })
     }
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

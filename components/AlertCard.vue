@@ -80,10 +80,14 @@ async function changeAlertEnabled() {
     if (editedAlertIndex && editedAlertIndex !== -1) {
       alerts.value?.splice(editedAlertIndex, 1, data)
     }
-    toast.add({ title: `Alert ${alert.value.enabled ? 'enabled' : 'disabled'}` })
+    toast.add({
+      title: `Alert ${alert.value.enabled ? 'enabled' : 'disabled'}`,
+      color: 'green',
+      icon: 'i-heroicons-check-circle',
+    })
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

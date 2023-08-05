@@ -61,12 +61,11 @@ async function editSite() {
     if (editedSiteIndex !== -1) {
       sites.value?.splice(editedSiteIndex, 1, editedSite)
     }
-    toast.add({ title: `${site.value?.url} updated` })
+    toast.add({ title: `${site.value?.url} updated`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${siteId}/alerts`)
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
-    errors.url = err.message
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }
