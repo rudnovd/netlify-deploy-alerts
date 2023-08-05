@@ -1,4 +1,5 @@
 import { createError } from 'h3'
+import { StatusCodes } from 'http-status-codes'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import { Database } from '~~/types/database.types'
 
@@ -8,9 +9,9 @@ export default defineEventHandler(async (event) => {
   const { id } = event.context.params ?? {}
 
   if (!user?.id) {
-    throw createError({ statusMessage: 'Authorization required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Authorization required' })
   } else if (!id) {
-    throw createError({ statusMessage: 'Target id parameter required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Target id parameter required' })
   }
 
   const { data: target, error: targetError } = await supabase
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (targetError) {
-    throw createError(targetError.message)
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: targetError.message })
   }
 
   return target

@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import { Database } from '~~/types/database.types'
 
@@ -7,18 +8,32 @@ export default defineEventHandler(async (event) => {
   const { provider, target } = await readBody<Readonly<Pick<Target, 'provider' | 'target'>>>(event)
 
   if (!user?.id) {
-    throw createError({ statusMessage: 'Authorization required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Authorization required' })
   } else if (!target) {
-    throw createError({ statusMessage: 'Target is required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Target is required' })
   } else if (!provider) {
-    throw createError({ statusMessage: 'Provider is required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Provider is required' })
   }
 
   if (provider === 'Telegram') {
     const telegramUsernameRegexp = /.*\B@(?=\w{5,32}\b)[a-zA-Z0-9]+(?:_[a-zA-Z0-9]+)*.*/
     if (!telegramUsernameRegexp.test(target)) {
-      throw createError({ statusMessage: 'Telegram username is invalid' })
+      throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Telegram username is invalid' })
     }
+  }
+
+  const { data: alreadyExistTarget, error: alreadyExistTargetError } = await supabase
+    .from('targets')
+    .select('id')
+    .eq('provider', provider)
+    .eq('target', target)
+    .eq('user', user.id)
+    .single()
+
+  if (alreadyExistTargetError) {
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: alreadyExistTargetError.message })
+  } else if (alreadyExistTarget) {
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: `Target ${target} already exists` })
   }
 
   const { data: newTarget, error: newTargetError } = await supabase
@@ -32,7 +47,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (newTargetError) {
-    throw createError(newTargetError.message)
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: newTargetError.message })
   }
 
   return newTarget

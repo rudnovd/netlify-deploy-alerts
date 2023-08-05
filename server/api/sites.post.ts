@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import { Database } from '~~/types/database.types'
 
@@ -8,9 +9,9 @@ export default defineEventHandler(async (event) => {
   const urlRegexp = /^([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i
 
   if (!user?.id) {
-    throw createError({ statusMessage: 'Authorization required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Authorization required' })
   } else if (!url) {
-    throw createError({ statusMessage: 'URL is required' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'URL is required' })
   } else if (url) {
     url = url.toLocaleLowerCase()
 
@@ -25,7 +26,7 @@ export default defineEventHandler(async (event) => {
     }
 
     if (!new RegExp(urlRegexp).test(url)) {
-      throw createError({ statusMessage: 'Wrong URL format' })
+      throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Wrong URL format' })
     }
   }
 
@@ -36,9 +37,9 @@ export default defineEventHandler(async (event) => {
     .eq('url', url)
 
   if (alreadyExistSitesError) {
-    throw createError(alreadyExistSitesError.message)
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: alreadyExistSitesError.message })
   } else if (alreadyExistSites?.length) {
-    throw createError({ statusMessage: 'Site already exists' })
+    throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Site already exists' })
   }
 
   const { data: newSite, error: newSiteError } = await supabase
@@ -51,7 +52,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (newSiteError) {
-    throw createError(newSiteError.message)
+    throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: newSiteError.message })
   }
 
   return newSite
