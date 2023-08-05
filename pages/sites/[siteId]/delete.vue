@@ -35,11 +35,11 @@ async function deleteSite() {
     loading.value = true
     await $fetch(`/api/sites/${siteId}`, { method: 'DELETE' })
     sites.value = sites.value.filter((site) => site.id !== siteId)
-    toast.add({ title: 'Site deleted' })
+    toast.add({ title: `${site.value?.url} deleted`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo('/sites')
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

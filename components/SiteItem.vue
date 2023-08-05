@@ -41,10 +41,14 @@ async function changeSiteEnabled() {
     if (editedSiteIndex && editedSiteIndex !== -1) {
       sites.value?.splice(editedSiteIndex, 1, changedSite)
     }
-    toast.add({ title: `${changedSite.url} ${changedSite.enabled ? 'enabled' : 'disabled'}` })
+    toast.add({
+      title: `${changedSite.url} ${changedSite.enabled ? 'enabled' : 'disabled'}`,
+      color: 'green',
+      icon: 'i-heroicons-check-circle',
+    })
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

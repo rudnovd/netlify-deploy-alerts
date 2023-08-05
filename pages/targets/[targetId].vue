@@ -15,8 +15,8 @@ if (!target.value) {
     const _target = await $fetch<Target>(`/api/targets/${route.params.targetId}`)
     targets.value.push(_target)
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
     navigateTo({ path: '/targets' })
   }
 }

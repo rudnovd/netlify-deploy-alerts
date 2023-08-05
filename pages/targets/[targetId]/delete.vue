@@ -37,11 +37,15 @@ async function deleteTarget() {
     loading.value = true
     await $fetch(`/api/targets/${target.value.id}`, { method: 'DELETE' })
     targets.value = targets.value.filter((_target) => _target.id !== target.value?.id)
-    toast.add({ title: `Target '${target.value.provider} - ${target.value.target}' deleted` })
+    toast.add({
+      title: `Target '${target.value.provider} - ${target.value.target}' deleted`,
+      color: 'green',
+      icon: 'i-heroicons-check-circle',
+    })
     navigateTo('/targets')
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

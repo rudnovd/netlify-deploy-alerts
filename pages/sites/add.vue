@@ -56,12 +56,11 @@ async function addSite() {
       body,
     })
     sites.value.push(newSite)
-    toast.add({ title: `${newSite.url} added` })
+    toast.add({ title: `${newSite.url} added`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${newSite.id}`)
   } catch (error) {
-    const err = error as FetchError
-    errors.url = err.message
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

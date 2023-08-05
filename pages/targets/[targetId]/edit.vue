@@ -80,11 +80,11 @@ async function editTarget() {
     if (editedTargetIndex !== -1) {
       targets.value?.splice(editedTargetIndex, 1, editedTarget)
     }
-    toast.add({ title: 'Target updated' })
+    toast.add({ title: `Target ${editedTarget.target} updated`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/targets/${editedTarget.id}/confirm`)
   } catch (error) {
-    const err = error as FetchError
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   } finally {
     loading.value = false
   }

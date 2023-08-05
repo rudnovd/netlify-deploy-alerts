@@ -29,11 +29,11 @@ const siteId = useState<string | null>('selectedSite')
 async function signOut() {
   try {
     await auth.signOut()
-    toast.add({ title: 'Signed out successfully' })
+    toast.add({ title: 'Signed out successfully', color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo('/')
   } catch (error) {
-    const err = error as Error
-    toast.add({ title: err.message })
+    const { statusMessage } = error as FetchError
+    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
   }
 }
 </script>
