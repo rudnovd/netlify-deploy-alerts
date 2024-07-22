@@ -41,12 +41,12 @@ const router = useRouter()
 const route = useRoute()
 const toast = useToast()
 
-const targets = useState<Array<Target>>('targets', () => [])
-const events = useState<Array<Event>>('events', () => [])
-const alerts = useState<Array<Alert>>('alerts', () => [])
-const sites = useState<Array<Site>>('sites', () => [])
+const { data: targets } = useNuxtData<Array<Target>>('targets')
+const { data: events } = useNuxtData<Array<Event>>('events')
+const { data: alerts } = useNuxtData<Array<Alert>>('alerts')
+const { data: sites } = useNuxtData<Array<Site>>('sites')
 
-const site = computed(() => sites.value.find((site) => site.id === route.params.siteId))
+const site = computed(() => sites.value?.find((site) => site.id === siteId))
 
 const errors = reactive({
   target: '',
@@ -55,14 +55,14 @@ const errors = reactive({
 })
 
 const targetsOptions = computed(() => {
-  return targets.value.map((target) => ({
+  return targets.value?.map((target) => ({
     label: `${target.provider} - ${target.target}`,
     value: target.id,
   }))
 })
 
 const eventsOptions = computed(() => {
-  return events.value.map((event) => ({
+  return events.value?.map((event) => ({
     label: event.name,
     value: event.id,
   }))
@@ -94,9 +94,9 @@ async function addAlert() {
   try {
     loading.value = true
     const newAlert = await $fetch<Alert>('/api/alerts', { method: 'POST', body: alert })
-    alerts.value.push(newAlert)
-    navigateTo(`/sites/${route.params.siteId}/alerts`)
-    toast.add({ title: 'Alert created' })
+    alerts.value?.push(newAlert)
+    navigateTo(`/sites/${siteId}/alerts`)
+    toast.add({ title: 'Alert created', color: 'green', icon: 'i-heroicons-check-circle' })
   } catch (error) {
     const err = error as FetchError
     toast.add({ title: err.message })

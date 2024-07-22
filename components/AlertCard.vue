@@ -41,14 +41,14 @@
 <script setup lang="ts">
 const props = defineProps<{ alert: Alert }>()
 const route = useRoute()
-const alert = toRef(props.alert)
+const alert = toRef(() => props.alert)
 const config = useRuntimeConfig()
 
 const toast = useToast()
 
-const targets = useState<Array<Target>>('targets')
-const events = useState<Array<{ id: string; name: string }>>('events')
-const alerts = useState<Array<Alert>>('alerts')
+const { data: targets } = useNuxtData<Array<Target>>('targets')
+const { data: events } = useNuxtData<Array<{ id: string; name: string }>>('events')
+const { data: alerts } = useNuxtData<Array<Alert>>('alerts')
 
 const loading = ref(false)
 

@@ -1,17 +1,16 @@
 <template>
-  <div class="py-4 h-screen">
+  <div class="py-4">
     <section v-if="!sites?.length" class="h-screen flex items-center justify-center">
       <UButton class="flex items-center justify-center" to="/sites/add"> Add first site </UButton>
     </section>
-
-    <section v-if="sites?.length" class="index">
+    <section v-else class="index">
       <section class="flex flex-col gap-2">
         <ul class="grid gap-y-2 grid-cols-1 place-content-start">
           <SiteItem
             v-for="site in sites"
             :key="site.id"
             :site="site"
-            :active="route.params.siteId === site.id"
+            :active="siteId === site.id"
             @click="navigateTo(`/sites/${site.id}/alerts`)"
           />
         </ul>
@@ -23,32 +22,27 @@
         </div>
       </section>
 
-      <NuxtPage :page-key="`/sites/${route.params.siteId}`"></NuxtPage>
+      <NuxtPage :page-key="`/sites/add`" />
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-const { data: eventsData } = useFetch<Array<Event>>('/api/events')
-const { data: sitesData } = useFetch<Array<Site>>('/api/sites')
-const { data: alertsData } = useFetch<Array<Alert>>('/api/alerts')
-const { data: targetsData } = useFetch<Array<Target>>('/api/targets')
-const route = useRoute()
-useState('alerts', () => alertsData)
-const sites = useState('sites', () => sitesData)
-useState('targets', () => targetsData)
-useState('events', () => eventsData)
+useFetch<Array<Event>>('/api/events', { key: 'events', lazy: true })
+useFetch<Array<Alert>>('/api/alerts', { key: 'alerts', lazy: true })
+useFetch<Array<Target>>('/api/targets', { key: 'targets', lazy: true })
+const { data: sites } = await useFetch<Array<Site>>('/api/sites', { key: 'sites' })
+const siteId = useState<string | null>('selectedSite')
+
+definePageMeta({ keepalive: true })
 </script>
 
 <style scoped>
 .index {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 2fr 3fr;
   gap: 1rem;
   height: inherit;
-}
-.site {
-  min-height: 48px;
 }
 
 @media (max-width: 768px) {

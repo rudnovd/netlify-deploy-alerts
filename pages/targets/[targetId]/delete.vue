@@ -29,9 +29,9 @@
 <script setup lang="ts">
 const route = useRoute()
 const toast = useToast()
-const targets = useState<Array<Target>>('targets', () => [])
+const { data: targets } = useNuxtData<Array<Target>>('targets')
 
-const target = ref(targets.value.find((target) => target.id === route.params.targetId))
+const target = ref(targets.value?.find((target) => target.id === route.params.targetId))
 const loading = ref(false)
 
 async function deleteTarget() {
@@ -42,8 +42,15 @@ async function deleteTarget() {
   try {
     loading.value = true
     await $fetch(`/api/targets/${target.value.id}`, { method: 'DELETE' })
-    targets.value = targets.value.filter((_target) => _target.id !== target.value?.id)
-    toast.add({ title: `Target '${target.value.provider} - ${target.value.target}' deleted` })
+    if (!targets.value) {
+      targets.value = []
+    }
+    targets.value = targets.value?.filter((_target) => _target.id !== target.value?.id)
+    toast.add({
+      title: `Target '${target.value.provider} - ${target.value.target}' deleted`,
+      color: 'green',
+      icon: 'i-heroicons-check-circle',
+    })
     navigateTo('/targets')
   } catch (error) {
     const err = error as FetchError

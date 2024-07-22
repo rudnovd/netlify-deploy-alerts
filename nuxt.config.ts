@@ -1,9 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
-  modules: ['@nuxthq/ui', '@nuxtjs/supabase', '@nuxtjs/eslint-module'],
+  debug: true,
+  dev: true,
+  sourcemap: {
+    client: true,
+    server: true,
+  },
+  modules: ['@nuxthq/ui', '@nuxtjs/supabase', '@nuxtjs/eslint-module', '@vueuse/nuxt'],
   typescript: {
     strict: true,
+  },
+  build: {
+    // extend(config, ctx) {
+    //   if (ctx.isDev) {
+    //     config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+    //   }
+    // }
+    analyze: true,
   },
   nitro: {
     plugins: ['plugins/telegraf.ts'],
@@ -11,6 +24,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       telegramBotLink: process.env.NUXT_TELEGRAM_BOT_LINK,
+      title: 'Netlify Deploy Alerts',
     },
   },
   app: {

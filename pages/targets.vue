@@ -11,6 +11,7 @@
       <ul v-if="targets?.length" class="grid gap-y-2 grid-cols-1 place-content-start">
         <TargetItem v-for="target in targets" :key="target.id" :target="target" />
       </ul>
+      <span v-else> No targets added yet </span>
 
       <UButton class="flex justify-center mt-2 w-full" to="/targets/add">Add target</UButton>
     </UCard>
@@ -20,5 +21,17 @@
 </template>
 
 <script setup lang="ts">
-const targets = useState<Array<Target>>('targets', () => [])
+const {
+  public: { title },
+} = useRuntimeConfig()
+const { data: targets } = useNuxtData<Array<Target>>('targets')
+const siteId = useState<string | null>('selectedSite')
+
+useSeoMeta({
+  title: `Targets | ${title}`,
+})
+
+if (!targets.value?.length) {
+  await useFetch(`/api/targets`, { key: 'targets' })
+}
 </script>

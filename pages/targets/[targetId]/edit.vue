@@ -31,7 +31,7 @@
 const router = useRouter()
 const route = useRoute()
 const toast = useToast()
-const targets = useState<Array<Target>>('targets', () => [])
+const { data: targets } = useNuxtData<Array<Target>>('targets')
 
 const providers = ['Telegram']
 const loading = ref(false)
@@ -44,7 +44,7 @@ const errors = reactive({
   target: '',
 })
 
-const _target = targets.value.find((target) => target.id === route.params.targetId)
+const _target = targets.value?.find((target) => target.id === route.params.targetId)
 if (_target) {
   target.value = _target
 }
@@ -78,7 +78,7 @@ async function editTarget() {
       body,
     })
     const editedTargetIndex = targets.value?.findIndex((target) => target.id === editedTarget.id)
-    if (editedTargetIndex !== -1) {
+    if (editedTargetIndex !== undefined && editedTargetIndex !== -1) {
       targets.value?.splice(editedTargetIndex, 1, editedTarget)
     }
     toast.add({ title: 'Target updated' })

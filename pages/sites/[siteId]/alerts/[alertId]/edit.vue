@@ -41,13 +41,13 @@ const router = useRouter()
 const route = useRoute()
 const toast = useToast()
 
-const targets = useState<Array<Target>>('targets', () => [])
-const events = useState<Array<Event>>('events', () => [])
-const alerts = useState<Array<Alert>>('alerts', () => [])
-const sites = useState<Array<Site>>('sites', () => [])
+const { data: targets } = useNuxtData<Array<Target>>('targets')
+const { data: events } = useNuxtData<Array<Event>>('events')
+const { data: alerts } = useNuxtData<Array<Alert>>('alerts')
+const { data: sites } = useNuxtData<Array<Site>>('sites')
 
-const site = computed(() => sites.value.find((site) => site.id === route.params.siteId))
-const selectedAlert = ref(alerts.value.find((a) => a.id === route.params.alertId))
+const site = computed(() => sites.value?.find((site) => site.id === siteId))
+const selectedAlert = ref(alerts.value?.find((a) => a.id === alertId))
 
 const errors = reactive({
   target: '',
@@ -56,14 +56,14 @@ const errors = reactive({
 })
 
 const targetsOptions = computed(() => {
-  return targets.value.map((target) => ({
+  return targets.value?.map((target) => ({
     label: `${target.provider} - ${target.target}`,
     value: target.id,
   }))
 })
 
 const eventsOptions = computed(() => {
-  return events.value.map((event) => ({
+  return events.value?.map((event) => ({
     label: event.name,
     value: event.id,
   }))
@@ -84,13 +84,13 @@ if (selectedAlert.value) {
   alert.event = selectedAlert.value.event
   alert.text = selectedAlert.value.text
   if (alert.target) {
-    const _target = targets.value.find((target) => target.id === alert.target)
+    const _target = targets.value?.find((target) => target.id === alert.target)
     if (_target) {
       target.value = { label: _target.target, value: _target.id }
     }
   }
   if (alert.event) {
-    const _event = events.value.find((event) => event.id === alert.event)
+    const _event = events.value?.find((event) => event.id === alert.event)
     if (_event) {
       event.value = { label: _event.name, value: _event.id }
     }
@@ -114,7 +114,7 @@ async function saveAlert() {
     loading.value = true
     const editedAlert = await $fetch<Alert>(`/api/alerts/${selectedAlert.value?.id}`, { method: 'PUT', body: alert })
     const editedAlertIndex = alerts.value?.findIndex((alert) => alert.id === editedAlert.id)
-    if (editedAlertIndex !== -1) {
+    if (editedAlertIndex !== undefined && editedAlertIndex !== -1) {
       alerts.value?.splice(editedAlertIndex, 1, editedAlert)
     }
     toast.add({ title: 'Alert saved' })

@@ -26,7 +26,7 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" :loading="loading" @click="addTarget">Add</UButton>
+          <UButton :disabled="loading" :loading="loading" @click="throttleAddTarget">Add</UButton>
         </section>
       </template>
     </UCard>
@@ -37,7 +37,7 @@
 const toast = useToast()
 
 const providers = ['Telegram']
-const targets = useState<Array<Target>>('targets', () => [])
+const { data: targets } = useNuxtData<Array<Target>>('targets')
 
 const loading = ref(false)
 const target = reactive({
@@ -53,7 +53,7 @@ async function addTarget() {
   errors.provider = !target.provider ? 'Provider is required' : ''
   errors.target = !target.target ? 'Target is required' : ''
 
-  if (errors.provider || errors.target) {
+  if (Object.values(errors).filter((error) => error).length) {
     return
   }
 
@@ -63,7 +63,7 @@ async function addTarget() {
   }
 
   if (body.provider === 'Telegram') {
-    if (body.target[0] !== '@') {
+    if (body.target.charAt(0) !== '@') {
       body.target = `@${body.target}`
     }
     errors.target = body.target.length < 6 ? 'Telegram username must be at least 5 characters' : ''
@@ -76,8 +76,12 @@ async function addTarget() {
   try {
     loading.value = true
     const newTarget = await $fetch<Target>('/api/targets', { method: 'POST', body })
-    targets.value.push(newTarget)
-    toast.add({ title: `Target '${newTarget.provider} - ${newTarget.target}' added` })
+    targets.value?.push(newTarget)
+    toast.add({
+      title: `Target '${newTarget.provider} - ${newTarget.target}' added`,
+      color: 'green',
+      icon: 'i-heroicons-check-circle',
+    })
     navigateTo(`/targets/${newTarget.id}/confirm`)
   } catch (error) {
     const err = error as FetchError
@@ -86,4 +90,7 @@ async function addTarget() {
     loading.value = false
   }
 }
+
+const throttleAddTarget = useThrottleFn(addTarget, 1000)
+onKeyStroke('Enter', throttleAddTarget)
 </script>

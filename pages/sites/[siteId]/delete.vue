@@ -29,18 +29,20 @@
 <script setup lang="ts">
 const route = useRoute()
 const toast = useToast()
-const router = useRouter()
-const sites = useState<Array<Site>>('sites', () => [])
+const { data: sites } = useNuxtData<Array<Site>>('sites')
 
-const site = ref(sites.value.find((site) => site.id === route.params.siteId))
+const site = ref(sites.value?.find((site) => site.id === siteId))
 const loading = ref(false)
 
 async function deleteSite() {
   try {
     loading.value = true
-    await $fetch(`/api/sites/${route.params.siteId}`, { method: 'DELETE' })
-    sites.value = sites.value.filter((site) => site.id !== route.params.siteId)
-    toast.add({ title: 'Site deleted' })
+    await $fetch(`/api/sites/${siteId}`, { method: 'DELETE' })
+    if (!sites.value) {
+      sites.value = []
+    }
+    sites.value = sites.value?.filter((site) => site.id !== siteId)
+    toast.add({ title: `${site.value?.url} deleted`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo('/sites')
   } catch (error) {
     const err = error as FetchError

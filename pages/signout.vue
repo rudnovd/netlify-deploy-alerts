@@ -21,10 +21,9 @@
 </template>
 
 <script setup lang="ts">
-const router = useRouter()
-
-const { auth } = useSupabaseAuthClient()
+const { auth } = useSupabaseClient()
 const toast = useToast()
+const siteId = useState<string | null>('selectedSite')
 
 async function signOut() {
   try {

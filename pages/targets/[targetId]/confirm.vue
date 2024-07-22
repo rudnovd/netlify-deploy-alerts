@@ -41,10 +41,11 @@
 const route = useRoute()
 const toast = useToast()
 const config = useRuntimeConfig()
-const targets = useState<Array<Target>>('targets', () => [])
+const { data: targets } = useNuxtData<Array<Target>>('targets')
+const siteId = useState<string | null>('selectedSite')
 
 const loading = ref(false)
-const target = ref(targets.value.find((target) => target.id === route.params.targetId))
+const target = ref(targets.value?.find((target) => target.id === route.params.targetId))
 
 async function checkConfirmation() {
   if (!target.value) {
@@ -54,11 +55,15 @@ async function checkConfirmation() {
   try {
     loading.value = true
     const targetForConfirm = await $fetch<Target>(`/api/targets/${target.value.id}`)
-    const thisTargetIndex = targets.value.findIndex((t) => t.id === targetForConfirm.id)
-    if (targetForConfirm.confirmed) {
-      targets.value.splice(thisTargetIndex, 1, targetForConfirm)
-      toast.add({ title: `Target '${targetForConfirm.target}' confirmed` })
-      navigateTo({ path: '/sites' })
+    const thisTargetIndex = targets.value?.findIndex((t) => t.id === targetForConfirm.id)
+    if (targetForConfirm.confirmed && thisTargetIndex !== undefined && thisTargetIndex !== -1) {
+      targets.value?.splice(thisTargetIndex, 1, targetForConfirm)
+      toast.add({
+        title: `Target '${targetForConfirm.target}' confirmed`,
+        color: 'green',
+        icon: 'i-heroicons-check-circle',
+      })
+      navigateTo({ path: siteId ? `/sites/${siteId}/alerts` : '/sites' })
     } else {
       toast.add({ title: `Target '${targetForConfirm.target}' not confirmed, use /start command again` })
     }

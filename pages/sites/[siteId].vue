@@ -1,14 +1,13 @@
 <template>
-  <NuxtPage />
+  <NuxtPage :page-key="`/sites/${router.currentRoute.value.params.siteId}/alerts`" />
 </template>
 
 <script setup lang="ts">
 const router = useRouter()
 
-watch(router.currentRoute, (newRoute) => {
-  const { path, params } = newRoute
-  if (path.split('/').length === 3 && params.siteId) {
-    navigateTo(`/sites/${params.siteId}/alerts`)
+watchEffect(() => {
+  if (router.currentRoute.value.name === 'sites-siteId') {
+    router.push(`/sites/${router.currentRoute.value.params.siteId}/alerts`)
   }
 })
 </script>

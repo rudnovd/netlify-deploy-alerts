@@ -4,13 +4,7 @@
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Edit site</h3>
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-x-mark-20-solid"
-            class="-my-1"
-            @click="navigateTo(`/sites/${route.params.siteId}`)"
-          />
+          <ButtonClose :to="`/sites/${siteId}/alerts`" />
         </div>
       </template>
 
@@ -36,7 +30,9 @@
 <script setup lang="ts">
 const route = useRoute()
 const toast = useToast()
-const sites = useState<Array<Site>>('sites', () => [])
+const { data: sites } = useNuxtData<Array<Site>>('sites')
+
+console.log('s', siteId)
 
 const loading = ref(false)
 const site = ref(sites.value?.find((site) => site.id === route.params.siteId))
@@ -62,7 +58,7 @@ async function editSite() {
       body,
     })
     const editedSiteIndex = sites.value?.findIndex((site) => site.id === editedSite.id)
-    if (editedSiteIndex !== -1) {
+    if (editedSiteIndex !== undefined && editedSiteIndex !== -1) {
       sites.value?.splice(editedSiteIndex, 1, editedSite)
     }
     toast.add({ title: `${site.value?.url} updated` })

@@ -36,7 +36,8 @@
 
 <script setup lang="ts">
 const toast = useToast()
-const sites = useState<Array<Site>>('sites', () => [])
+const { data: sites } = useNuxtData<Array<Site>>('sites')
+const siteId = useState<string | null>('selectedSite')
 
 const loading = ref(false)
 const url = ref('')
@@ -60,8 +61,8 @@ async function addSite() {
       method: 'POST',
       body,
     })
-    sites.value.push(newSite)
-    toast.add({ title: `${newSite.url} added` })
+    sites.value?.push(newSite)
+    toast.add({ title: `${newSite.url} added`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${newSite.id}`)
   } catch (error) {
     const err = error as FetchError
