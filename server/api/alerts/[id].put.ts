@@ -1,6 +1,6 @@
-import { StatusCodes } from 'http-status-codes'
+import type { Database } from '~~/types/database.types'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import { Database } from '~~/types/database.types'
+import { StatusCodes } from 'http-status-codes'
 
 export default defineEventHandler(async (h3Event) => {
   const user = await serverSupabaseUser(h3Event)
@@ -10,7 +10,8 @@ export default defineEventHandler(async (h3Event) => {
 
   if (!user?.id) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Authorization required' })
-  } else if (!id) {
+  }
+  else if (!id) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Alert id parameter required' })
   }
 

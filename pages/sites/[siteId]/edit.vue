@@ -3,7 +3,9 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Edit site</h3>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Edit site
+          </h3>
           <ButtonClose :to="`/sites/${siteId}`" />
         </div>
       </template>
@@ -20,7 +22,9 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" :loading="loading" @click="editSite">Save</UButton>
+          <UButton :disabled="loading" :loading="loading" @click="editSite">
+            Save
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -35,7 +39,7 @@ const toast = useToast()
 const sites = useState<Array<Site>>('sites', () => [])
 
 const loading = ref(false)
-const site = ref(sites.value?.find((site) => site.id === siteId))
+const site = ref(sites.value?.find(site => site.id === siteId))
 const errors = reactive({
   url: '',
 })
@@ -57,16 +61,18 @@ async function editSite() {
       method: 'PUT',
       body,
     })
-    const editedSiteIndex = sites.value?.findIndex((site) => site.id === editedSite.id)
+    const editedSiteIndex = sites.value?.findIndex(site => site.id === editedSite.id)
     if (editedSiteIndex !== -1) {
       sites.value?.splice(editedSiteIndex, 1, editedSite)
     }
     toast.add({ title: `${site.value?.url} updated`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${siteId}/alerts`)
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

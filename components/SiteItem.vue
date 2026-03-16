@@ -1,6 +1,6 @@
 <template>
   <li
-    :class="['site flex justify-between items-center p-2 rounded border-2 cursor-pointer', { 'bg-green-600': active }]"
+    class="site flex justify-between items-center p-2 rounded border-2 cursor-pointer" :class="[{ 'bg-green-600': active }]"
   >
     <span class="truncate" :title="site.url">{{ site.url }}</span>
 
@@ -46,10 +46,12 @@ async function changeSiteEnabled() {
       color: 'green',
       icon: 'i-heroicons-check-circle',
     })
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

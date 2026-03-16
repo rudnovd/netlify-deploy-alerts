@@ -3,7 +3,9 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Edit target</h3>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Edit target
+          </h3>
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" to="/targets" />
         </div>
       </template>
@@ -20,7 +22,9 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" :loading="loading" @click="editTarget">Save</UButton>
+          <UButton :disabled="loading" :loading="loading" @click="editTarget">
+            Save
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -43,7 +47,7 @@ const errors = reactive({
   target: '',
 })
 
-const _target = targets.value.find((target) => target.id === route.params.targetId)
+const _target = targets.value.find(target => target.id === route.params.targetId)
 if (_target) {
   target.value = _target
 }
@@ -76,16 +80,18 @@ async function editTarget() {
       method: 'PUT',
       body,
     })
-    const editedTargetIndex = targets.value?.findIndex((target) => target.id === editedTarget.id)
+    const editedTargetIndex = targets.value?.findIndex(target => target.id === editedTarget.id)
     if (editedTargetIndex !== -1) {
       targets.value?.splice(editedTargetIndex, 1, editedTarget)
     }
     toast.add({ title: `Target ${editedTarget.target} updated`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/targets/${editedTarget.id}/confirm`)
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

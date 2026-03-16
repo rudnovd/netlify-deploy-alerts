@@ -54,17 +54,18 @@ const config = useRuntimeConfig()
 const toast = useToast()
 
 const targets = useState<Array<Target>>('targets')
-const events = useState<Array<{ id: string; name: string }>>('events')
+const events = useState<Array<{ id: string, name: string }>>('events')
 const alerts = useState<Array<Alert>>('alerts')
 
 const loading = ref(false)
 
-const target = computed(() => targets.value?.find((target) => target.id === alert.value.target))
-const event = computed(() => events.value?.find((event) => event.id === alert.value.event))
+const target = computed(() => targets.value?.find(target => target.id === alert.value.target))
+const event = computed(() => events.value?.find(event => event.id === alert.value.event))
 const providerLink = computed(() => {
   if (target.value?.provider === 'Telegram') {
     return config.public.telegramBotLink
-  } else {
+  }
+  else {
     return target.value?.provider
   }
 })
@@ -85,10 +86,12 @@ async function changeAlertEnabled() {
       color: 'green',
       icon: 'i-heroicons-check-circle',
     })
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

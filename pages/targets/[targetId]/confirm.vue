@@ -3,15 +3,20 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Confirm target</h3>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" to="/targets" />
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Confirm target
+          </h3>
+          <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" to="/targets" />
         </div>
       </template>
 
       <section>
         <template v-if="target?.provider === 'Telegram'">
-          To allow alerts to be sent to <UBadge color="cyan">{{ target.target }}</UBadge
-          >, you must send the <UBadge color="cyan">/confirm</UBadge> command to
+          To allow alerts to be sent to <UBadge color="info">
+            {{ target.target }}
+          </UBadge>, you must send the <UBadge color="info">
+            /confirm
+          </UBadge> command to
           <a
             class="font-medium text-blue-600 dark:text-blue-500 underline"
             target="_blank"
@@ -24,7 +29,9 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :loading="loading" :disabled="loading" @click="checkConfirmation">Check confirmation</UButton>
+          <UButton :loading="loading" :disabled="loading" @click="checkConfirmation">
+            Check confirmation
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -39,7 +46,7 @@ const targets = useState<Array<Target>>('targets', () => [])
 const siteId = useState<string | null>('selectedSite')
 
 const loading = ref(false)
-const target = ref(targets.value.find((target) => target.id === route.params.targetId))
+const target = ref(targets.value.find(target => target.id === route.params.targetId))
 
 async function checkConfirmation() {
   if (!target.value) {
@@ -49,7 +56,7 @@ async function checkConfirmation() {
   try {
     loading.value = true
     const targetForConfirm = await $fetch<Target>(`/api/targets/${target.value.id}`)
-    const thisTargetIndex = targets.value.findIndex((t) => t.id === targetForConfirm.id)
+    const thisTargetIndex = targets.value.findIndex(t => t.id === targetForConfirm.id)
     if (targetForConfirm.confirmed) {
       targets.value.splice(thisTargetIndex, 1, targetForConfirm)
       toast.add({
@@ -58,17 +65,20 @@ async function checkConfirmation() {
         icon: 'i-heroicons-check-circle',
       })
       navigateTo({ path: siteId ? `/sites/${siteId}/alerts` : '/sites' })
-    } else {
+    }
+    else {
       toast.add({
         title: `Target '${targetForConfirm.target}' not confirmed, use /confirm command again`,
         color: 'red',
         icon: 'i-heroicons-x-circle',
       })
     }
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

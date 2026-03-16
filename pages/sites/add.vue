@@ -3,7 +3,9 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Add site</h3>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Add site
+          </h3>
           <ButtonClose :to="siteId ? `/sites/${siteId}/alerts` : '/sites'" />
         </div>
       </template>
@@ -21,7 +23,9 @@
 
       <template #footer>
         <section class="flex justify-end">
-          <UButton :disabled="loading" :loading="loading" @click="addSite">Add</UButton>
+          <UButton :disabled="loading" :loading="loading" @click="addSite">
+            Add
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -58,10 +62,12 @@ async function addSite() {
     sites.value.push(newSite)
     toast.add({ title: `${newSite.url} added`, color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${newSite.id}`)
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

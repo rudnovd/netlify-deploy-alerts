@@ -3,7 +3,9 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Create new alert</h3>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Create new alert
+          </h3>
           <ButtonClose :to="`/sites/${siteId}/alerts`" />
         </div>
       </template>
@@ -22,14 +24,20 @@
         </UFormGroup>
 
         <section class="flex gap-2">
-          <UBadge v-if="site" class="cursor-pointer" @click="addText(site.url)">{{ site.url }}</UBadge>
-          <UBadge v-if="event" class="cursor-pointer" @click="addText(event.label)">{{ event.label }}</UBadge>
+          <UBadge v-if="site" class="cursor-pointer" @click="addText(site.url)">
+            {{ site.url }}
+          </UBadge>
+          <UBadge v-if="event" class="cursor-pointer" @click="addText(event.label)">
+            {{ event.label }}
+          </UBadge>
         </section>
       </section>
 
       <template #footer>
         <section class="flex justify-end">
-          <UButton :loading="loading" @click="saveAlert">Save alert</UButton>
+          <UButton :loading="loading" @click="saveAlert">
+            Save alert
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -47,8 +55,8 @@ const events = useState<Array<Event>>('events', () => [])
 const alerts = useState<Array<Alert>>('alerts', () => [])
 const sites = useState<Array<Site>>('sites', () => [])
 
-const site = computed(() => sites.value.find((site) => site.id === siteId))
-const selectedAlert = ref(alerts.value.find((a) => a.id === alertId))
+const site = computed(() => sites.value.find(site => site.id === siteId))
+const selectedAlert = ref(alerts.value.find(a => a.id === alertId))
 
 const errors = reactive({
   target: '',
@@ -57,21 +65,21 @@ const errors = reactive({
 })
 
 const targetsOptions = computed(() => {
-  return targets.value.map((target) => ({
+  return targets.value.map(target => ({
     label: `${target.provider} - ${target.target}`,
     value: target.id,
   }))
 })
 
 const eventsOptions = computed(() => {
-  return events.value.map((event) => ({
+  return events.value.map(event => ({
     label: event.name,
     value: event.id,
   }))
 })
 
-const target = ref<{ label: string; value: string }>()
-const event = ref<{ label: string; value: string }>()
+const target = ref<{ label: string, value: string }>()
+const event = ref<{ label: string, value: string }>()
 const alert = reactive<Pick<Alert, 'target' | 'event' | 'site' | 'text'>>({
   target: '',
   event: '',
@@ -85,13 +93,13 @@ if (selectedAlert.value) {
   alert.event = selectedAlert.value.event
   alert.text = selectedAlert.value.text
   if (alert.target) {
-    const _target = targets.value.find((target) => target.id === alert.target)
+    const _target = targets.value.find(target => target.id === alert.target)
     if (_target) {
       target.value = { label: _target.target, value: _target.id }
     }
   }
   if (alert.event) {
-    const _event = events.value.find((event) => event.id === alert.event)
+    const _event = events.value.find(event => event.id === alert.event)
     if (_event) {
       event.value = { label: _event.name, value: _event.id }
     }
@@ -114,16 +122,18 @@ async function saveAlert() {
   try {
     loading.value = true
     const editedAlert = await $fetch<Alert>(`/api/alerts/${selectedAlert.value?.id}`, { method: 'PUT', body: alert })
-    const editedAlertIndex = alerts.value?.findIndex((alert) => alert.id === editedAlert.id)
+    const editedAlertIndex = alerts.value?.findIndex(alert => alert.id === editedAlert.id)
     if (editedAlertIndex !== -1) {
       alerts.value?.splice(editedAlertIndex, 1, editedAlert)
     }
     toast.add({ title: 'Alert saved', color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${siteId}/alerts`)
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

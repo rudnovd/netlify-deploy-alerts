@@ -1,7 +1,9 @@
 <template>
   <div class="py-4 h-screen">
     <section v-if="!sites?.length" class="h-screen flex items-center justify-center">
-      <UButton class="flex items-center justify-center" to="/sites/add"> Add first site </UButton>
+      <UButton class="flex items-center justify-center" to="/sites/add">
+        Add first site
+      </UButton>
     </section>
 
     <section v-if="sites?.length" class="index">
@@ -16,7 +18,9 @@
           />
         </ul>
 
-        <UButton class="flex items-center justify-center" to="/sites/add"> Add site </UButton>
+        <UButton class="flex items-center justify-center" to="/sites/add">
+          Add site
+        </UButton>
         <div class="flex justify-end items-end gap-2">
           <UButton class="ml-auto width-auto" size="xs" icon="i-heroicons-paper-airplane" to="/targets" />
           <UButton size="xs" icon="i-heroicons-arrow-left-on-rectangle" to="/signout" />

@@ -1,9 +1,24 @@
+import process from 'node:process'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxthq/ui', '@nuxtjs/supabase', '@nuxtjs/eslint-module', '@vueuse/nuxt'],
+  modules: ['@nuxt/ui', '@nuxtjs/supabase', '@nuxt/eslint', '@vueuse/nuxt'],
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+      ],
+    },
+  },
   typescript: {
     strict: true,
+  },
+  eslint: {
+    config: {
+      standalone: false,
+    },
   },
   nitro: {
     plugins: ['plugins/telegraf.ts'],
@@ -30,13 +45,10 @@ export default defineNuxtConfig({
           name: 'description',
           content: 'Get notifications when your Netlify projects are deployed',
         },
-        {
-          name: 'keywords',
-          content: 'netlify, deploy, alerts, telegram',
-        },
       ],
     },
   },
+  css: ['~/assets/css/main.css'],
   supabase: {
     redirectOptions: {
       login: '/',

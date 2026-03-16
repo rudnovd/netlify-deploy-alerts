@@ -1,4 +1,4 @@
-interface Alert {
+export interface Alert {
   id: string
   event: string
   target: string
@@ -10,21 +10,21 @@ interface Alert {
   updated_at: string
 }
 
-interface Event {
+export interface Event {
   id: string
   name: string
 }
 
-type Provider = "Telegram"
+type Provider = 'Telegram'
 
-interface Site {
+export interface Site {
   id: string
   url: string
   user: string
   enabled: boolean
 }
 
-interface Target {
+export interface Target {
   id: string
   user: string
   provider: Provider
@@ -34,7 +34,7 @@ interface Target {
   meta: string
 }
 
-interface FetchError {
+export interface FetchError {
   url: string
   statusCode: number
   statusMessage: string

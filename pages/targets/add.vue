@@ -3,8 +3,10 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Add target</h3>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" to="/targets" />
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Add target
+          </h3>
+          <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" to="/targets" />
         </div>
       </template>
 
@@ -20,7 +22,9 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" :loading="loading" @click="addTarget">Add</UButton>
+          <UButton :disabled="loading" :loading="loading" @click="addTarget">
+            Add
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -31,7 +35,6 @@
 const toast = useToast()
 
 const providers = ['Telegram']
-const targets = useState<Array<Target>>('targets', () => [])
 
 const loading = ref(false)
 const target = reactive({
@@ -72,14 +75,16 @@ async function addTarget() {
     const newTarget = await $fetch<Target>('/api/targets', { method: 'POST', body })
     toast.add({
       title: `Target '${newTarget.provider} - ${newTarget.target}' added`,
-      color: 'green',
+      color: 'success',
       icon: 'i-heroicons-check-circle',
     })
     navigateTo(`/targets/${newTarget.id}/confirm`)
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
-    toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+    toast.add({ title: statusMessage, color: 'error', icon: 'i-heroicons-x-circle' })
+  }
+  finally {
     loading.value = false
   }
 }

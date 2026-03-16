@@ -3,7 +3,9 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Delete target</h3>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Delete target
+          </h3>
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" to="/targets" />
         </div>
       </template>
@@ -12,8 +14,12 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" to="/targets">Cancel</UButton>
-          <UButton :disabled="loading" :loading="loading" @click="deleteTarget">Delete</UButton>
+          <UButton :disabled="loading" to="/targets">
+            Cancel
+          </UButton>
+          <UButton :disabled="loading" :loading="loading" @click="deleteTarget">
+            Delete
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -25,7 +31,7 @@ const route = useRoute()
 const toast = useToast()
 const targets = useState<Array<Target>>('targets', () => [])
 
-const target = ref(targets.value.find((target) => target.id === route.params.targetId))
+const target = ref(targets.value.find(target => target.id === route.params.targetId))
 const loading = ref(false)
 
 async function deleteTarget() {
@@ -36,17 +42,19 @@ async function deleteTarget() {
   try {
     loading.value = true
     await $fetch(`/api/targets/${target.value.id}`, { method: 'DELETE' })
-    targets.value = targets.value.filter((_target) => _target.id !== target.value?.id)
+    targets.value = targets.value.filter(_target => _target.id !== target.value?.id)
     toast.add({
       title: `Target '${target.value.provider} - ${target.value.target}' deleted`,
       color: 'green',
       icon: 'i-heroicons-check-circle',
     })
     navigateTo('/targets')
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

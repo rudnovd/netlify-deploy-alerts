@@ -1,6 +1,6 @@
-import { StatusCodes } from 'http-status-codes'
-import { Database } from '~~/types/database.types'
+import type { Database } from '~~/types/database.types'
 import { serverSupabaseClient } from '#supabase/server'
+import { StatusCodes } from 'http-status-codes'
 
 export default defineEventHandler(async (event) => {
   const supabase = await serverSupabaseClient<Database>(event)
@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
 
   if (!id) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Alert id parameter required' })
-  } else if (!headers['x-netlify-event']) {
+  }
+  else if (!headers['x-netlify-event']) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Netlify event missing' })
   }
 
@@ -46,17 +47,20 @@ export default defineEventHandler(async (event) => {
         statusCode: StatusCodes.BAD_REQUEST,
         statusMessage: `Confirmation required, please visit ${config.public.telegramBotLink}`,
       })
-    } else if (!target.meta) {
+    }
+    else if (!target.meta) {
       throw createError({
         statusCode: StatusCodes.NOT_FOUND,
         statusMessage: `User id not found, please visit ${config.public.telegramBotLink}`,
       })
-    } else if (!target.target) {
+    }
+    else if (!target.target) {
       throw createError({
         statusCode: StatusCodes.NOT_FOUND,
         statusMessage: `Target not found, please visit ${config.public.telegramBotLink}`,
       })
-    } else if (!site.enabled || !alert.enabled) {
+    }
+    else if (!site.enabled || !alert.enabled) {
       return {
         statusCode: StatusCodes.OK,
         statusMessage: 'OK',
@@ -69,7 +73,8 @@ export default defineEventHandler(async (event) => {
       statusCode: StatusCodes.OK,
       statusMessage: 'Alert sended',
     }
-  } else if (!target.provider) {
+  }
+  else if (!target.provider) {
     return {
       statusCode: StatusCodes.NOT_FOUND,
       statusMessage: 'Alert provider not found',

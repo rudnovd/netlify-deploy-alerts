@@ -1,9 +1,8 @@
 <template>
   <section class="h-screen">
-    <UContainer>
+    <UApp :toaster="{ position: 'bottom-right' }">
       <NuxtPage />
-    </UContainer>
-    <UNotifications />
+    </UApp>
   </section>
 </template>
 

@@ -3,7 +3,9 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Delete alert</h3>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Delete alert
+          </h3>
           <ButtonClose :to="`/sites/${siteId}/alerts`" />
         </div>
       </template>
@@ -12,8 +14,12 @@
 
       <template #footer>
         <section class="flex justify-end gap-2">
-          <UButton :disabled="loading" :to="`/sites/${siteId}/alerts`">Cancel</UButton>
-          <UButton :disabled="loading" :loading="loading" @click="deleteAlert">Delete</UButton>
+          <UButton :disabled="loading" :to="`/sites/${siteId}/alerts`">
+            Cancel
+          </UButton>
+          <UButton :disabled="loading" :loading="loading" @click="deleteAlert">
+            Delete
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -27,20 +33,22 @@ const {
 const toast = useToast()
 const alerts = useState<Array<Alert>>('alerts')
 
-const alert = ref(alerts.value.find((a) => a.id === alertId))
+const alert = ref(alerts.value.find(a => a.id === alertId))
 const loading = ref(false)
 
 async function deleteAlert() {
   try {
     loading.value = true
     await $fetch(`/api/alerts/${alertId}`, { method: 'DELETE' })
-    alerts.value = alerts.value.filter((a) => a.id !== alert.value?.id)
+    alerts.value = alerts.value.filter(a => a.id !== alert.value?.id)
     toast.add({ title: 'Alert deleted', color: 'green', icon: 'i-heroicons-check-circle' })
     navigateTo(`/sites/${siteId}/alerts`)
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

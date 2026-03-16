@@ -1,7 +1,7 @@
+import type { Database } from '~~/types/database.types'
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import { createError } from 'h3'
 import { StatusCodes } from 'http-status-codes'
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import { Database } from '~~/types/database.types'
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)

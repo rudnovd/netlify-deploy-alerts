@@ -1,6 +1,6 @@
-import { StatusCodes } from 'http-status-codes'
+import type { Database } from '~~/types/database.types'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import { Database } from '~~/types/database.types'
+import { StatusCodes } from 'http-status-codes'
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
@@ -10,11 +10,14 @@ export default defineEventHandler(async (event) => {
 
   if (!user?.id) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Authorization required' })
-  } else if (!id) {
+  }
+  else if (!id) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Target id parameter required' })
-  } else if (!provider) {
+  }
+  else if (!provider) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Provider required' })
-  } else if (!target) {
+  }
+  else if (!target) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Target required' })
   }
 

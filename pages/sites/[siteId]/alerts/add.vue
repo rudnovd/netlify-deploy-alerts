@@ -3,7 +3,9 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Create new alert</h3>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            Create new alert
+          </h3>
           <ButtonClose :to="`/sites/${siteId}/alerts`" />
         </div>
       </template>
@@ -22,14 +24,20 @@
         </UFormGroup>
 
         <section class="flex gap-2">
-          <UBadge v-if="site" class="cursor-pointer" @click="addText(site.url)">{{ site.url }}</UBadge>
-          <UBadge v-if="event" class="cursor-pointer" @click="addText(event.label)">{{ event.label }}</UBadge>
+          <UBadge v-if="site" class="cursor-pointer" @click="addText(site.url)">
+            {{ site.url }}
+          </UBadge>
+          <UBadge v-if="event" class="cursor-pointer" @click="addText(event.label)">
+            {{ event.label }}
+          </UBadge>
         </section>
       </section>
 
       <template #footer>
         <section class="flex justify-end">
-          <UButton :loading="loading" @click="addAlert">Create alert</UButton>
+          <UButton :loading="loading" @click="addAlert">
+            Create alert
+          </UButton>
         </section>
       </template>
     </UCard>
@@ -47,7 +55,7 @@ const events = useState<Array<Event>>('events', () => [])
 const alerts = useState<Array<Alert>>('alerts', () => [])
 const sites = useState<Array<Site>>('sites', () => [])
 
-const site = computed(() => sites.value.find((site) => site.id === siteId))
+const site = computed(() => sites.value.find(site => site.id === siteId))
 
 const errors = reactive({
   target: '',
@@ -56,21 +64,21 @@ const errors = reactive({
 })
 
 const targetsOptions = computed(() => {
-  return targets.value.map((target) => ({
+  return targets.value.map(target => ({
     label: `${target.provider} - ${target.target}`,
     value: target.id,
   }))
 })
 
 const eventsOptions = computed(() => {
-  return events.value.map((event) => ({
+  return events.value.map(event => ({
     label: event.name,
     value: event.id,
   }))
 })
 
-const target = ref<{ label: string; value: string }>()
-const event = ref<{ label: string; value: string }>()
+const target = ref<{ label: string, value: string }>()
+const event = ref<{ label: string, value: string }>()
 const alert = reactive<Pick<Alert, 'target' | 'event' | 'site' | 'text'>>({
   target: '',
   event: '',
@@ -98,10 +106,12 @@ async function addAlert() {
     alerts.value.push(newAlert)
     navigateTo(`/sites/${siteId}/alerts`)
     toast.add({ title: 'Alert created', color: 'green', icon: 'i-heroicons-check-circle' })
-  } catch (error) {
+  }
+  catch (error) {
     const { statusMessage } = error as FetchError
     toast.add({ title: statusMessage, color: 'red', icon: 'i-heroicons-x-circle' })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

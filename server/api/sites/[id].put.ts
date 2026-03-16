@@ -1,7 +1,9 @@
-import { StatusCodes } from 'http-status-codes'
+import type { Database } from '~~/types/database.types'
+import type { Site } from '~/types/types'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import { Database } from '~~/types/database.types'
+import { StatusCodes } from 'http-status-codes'
 
+const urlRegexp = /^[\w.-]+\.[a-z]{2,}(?:\/\S*)?$/i
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
   const supabase = await serverSupabaseClient<Database>(event)
@@ -11,14 +13,17 @@ export default defineEventHandler(async (event) => {
 
   if (!user?.id) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Authorization required' })
-  } else if (!id) {
+  }
+  else if (!id) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Site id parameter required' })
-  } else if (url) {
+  }
+  else if (url) {
     url = url.toLocaleLowerCase()
 
     if (url.includes('https://')) {
       url = url.replace('https://', '')
-    } else if (url.includes('http://')) {
+    }
+    else if (url.includes('http://')) {
       url = url.replace('http://', '')
     }
 
@@ -26,7 +31,6 @@ export default defineEventHandler(async (event) => {
       url = url.replaceAll('/', '')
     }
 
-    const urlRegexp = /^([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i
     if (!new RegExp(urlRegexp).test(url)) {
       throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Wrong URL format' })
     }

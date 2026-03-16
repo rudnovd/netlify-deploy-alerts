@@ -1,6 +1,9 @@
-import { StatusCodes } from 'http-status-codes'
+import type { Database } from '~~/types/database.types'
+import type { Target } from '~/types/types'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import { Database } from '~~/types/database.types'
+import { StatusCodes } from 'http-status-codes'
+
+const telegramUsernameRegexp = /.*\B@(?=\w{5,32}\b)[a-z0-9].*/i
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event)
@@ -9,14 +12,15 @@ export default defineEventHandler(async (event) => {
 
   if (!user?.id) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Authorization required' })
-  } else if (!target) {
+  }
+  else if (!target) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Target is required' })
-  } else if (!provider) {
+  }
+  else if (!provider) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Provider is required' })
   }
 
   if (provider === 'Telegram') {
-    const telegramUsernameRegexp = /.*\B@(?=\w{5,32}\b)[a-zA-Z0-9]+(?:_[a-zA-Z0-9]+)*.*/
     if (!telegramUsernameRegexp.test(target)) {
       throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: 'Telegram username is invalid' })
     }
@@ -32,7 +36,8 @@ export default defineEventHandler(async (event) => {
 
   if (alreadyExistTargetError) {
     throw createError({ statusCode: StatusCodes.INTERNAL_SERVER_ERROR, statusMessage: alreadyExistTargetError.message })
-  } else if (alreadyExistTarget) {
+  }
+  else if (alreadyExistTarget) {
     throw createError({ statusCode: StatusCodes.BAD_REQUEST, statusMessage: `Target ${target} already exists` })
   }
 

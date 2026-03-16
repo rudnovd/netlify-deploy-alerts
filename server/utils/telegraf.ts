@@ -1,8 +1,9 @@
+import process from 'node:process'
 import { Telegraf } from 'telegraf'
 
 let _bot: Telegraf
 
-export const useTelegraf = () => {
+export function useTelegraf() {
   if (!process.env.TELEGRAM_BOT_TOKEN) {
     throw new Error('TELEGRAM_BOT_TOKEN is required')
   }

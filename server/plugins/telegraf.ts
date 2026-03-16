@@ -30,7 +30,8 @@ export default defineNitroPlugin(() => {
 
     if (targetError) {
       throw createError(targetError.message)
-    } else if (!target) {
+    }
+    else if (!target) {
       return ctx.reply('Target not created, first create target at https://netlifydeployalerts.netlify.app/targets/add')
     }
 
@@ -45,7 +46,8 @@ export default defineNitroPlugin(() => {
         .eq('target', username)
 
       ctx.reply('Confirmed 👍')
-    } else {
+    }
+    else {
       ctx.reply('Already confirmed 👍')
     }
   })
